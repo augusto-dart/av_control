@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "666082236827",
+    "project_id": "av-control-b0aee",
+    "storage_bucket": "av-control-b0aee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666082236827:android:ec6ce1de44ffbdb05ce93e",
+        "android_client_info": {
+          "package_name": "com.example.av_control"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTl-W2Vtu9CuJDE8bxORlbMx7bWWIy9Dg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

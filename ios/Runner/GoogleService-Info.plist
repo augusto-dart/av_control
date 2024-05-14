@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyDvxiA-JDSiqjb6WqHf3QYtlo0IG8_QJEs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>666082236827</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.avControl</string>
+	<key>PROJECT_ID</key>
+	<string>av-control-b0aee</string>
+	<key>STORAGE_BUCKET</key>
+	<string>av-control-b0aee.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:666082236827:ios:f1427e0ac473f29d5ce93e</string>
+</dict>
+</plist>

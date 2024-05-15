@@ -45,12 +45,12 @@ class Carousel extends StatelessWidget {
                           ),
                           Image.asset(
                             'assets/images/logo_white.png',
-                            width: 100,
+                            width: 50,
                           ),
                         ],
                       ),
                       Divider(
-                        height: 45,
+                        height: 15,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                       Row(

@@ -1,11 +1,15 @@
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/Components/buttons/normal_button.dart';
 import 'package:av_control/Utils/util.dart';
+import 'package:av_control/models/bloc/expense_bloc.dart';
 import 'package:av_control/models/cards.dart';
+import 'package:av_control/models/expense.dart';
 import 'package:av_control/pages/auth/login_page.dart';
 import 'package:av_control/pages/home/carousel.dart';
+import 'package:av_control/pages/home/last_expenses.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -29,12 +33,72 @@ class HomeScreen extends StatelessWidget with Utils {
       Cards(descricao: 'Bradesco', valor: 2350),
     ];
 
+    // final List<Expense> expenses = [
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 1),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 2),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 3),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 4),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 5),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 6),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 7),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    //   Expense(
+    //       tipo: 1,
+    //       data: DateTime(2024, 6, 8),
+    //       descricao: 'Gasolina',
+    //       categoria: 'Carro',
+    //       cartao: 'Nubank',
+    //       valor: 500.0),
+    // ];
+
     late double valorTotal = cartoes
         .map((cartao) => cartao.valor)
         .reduce((value, element) => value + element);
 
     String imageUrl = usuarioAtual.photoURL ?? '';
     String nome = usuarioAtual.displayName!;
+    double widgetsHeight = MediaQuery.of(context).size.height - 405;
 
     return Scaffold(
       body: SliderDrawer(
@@ -91,60 +155,100 @@ class HomeScreen extends StatelessWidget with Utils {
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Valor Total',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.grey,
+        child: BlocBuilder<ExpenseBloc, ExpenseState>(
+          builder: (context, state) {
+            if (state is ExpenseInitial) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.tertiary,
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                'R\$ $valorTotal',
-                style: const TextStyle(
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            Carousel(cartoes: cartoes),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                NormalIconButton(
-                  icone: MdiIcons.finance,
-                  onPress: () => {},
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Nova Receita",
-                ),
-                NormalIconButton(
-                  icone: MdiIcons.chartBellCurve,
-                  onPress: () => {},
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Nova Despesa",
-                ),
-                NormalIconButton(
-                  icone: MdiIcons.creditCardPlusOutline,
-                  onPress: () => {},
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Cartões",
-                ),
-                NormalIconButton(
-                  icone: MdiIcons.more,
-                  onPress: () => {},
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Outros",
-                ),
-              ],
-            )
-          ],
+              );
+            }
+            if (state is ExpenseLoaded) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      widgetsHeight = constraints.maxHeight;
+                      return Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Valor Total',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'R\$ $valorTotal',
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                              ),
+                            ),
+                          ),
+                          Carousel(cartoes: cartoes),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              NormalIconButton(
+                                icone: MdiIcons.finance,
+                                onPress: () => {},
+                                width: MediaQuery.of(context).size.width / 6,
+                                label: "Nova Receita",
+                              ),
+                              NormalIconButton(
+                                icone: MdiIcons.chartBellCurve,
+                                onPress: () => {
+                                  context.read<ExpenseBloc>().add(
+                                        AddExpense(
+                                          expense: Expense(
+                                            tipo: 1,
+                                            data: DateTime(2024, 6, 1),
+                                            descricao: 'Gasolina',
+                                            categoria: 'Carro',
+                                            cartao: 'Nubank',
+                                            valor: 500.0,
+                                          ),
+                                        ),
+                                      ),
+                                },
+                                width: MediaQuery.of(context).size.width / 6,
+                                label: "Nova Despesa",
+                              ),
+                              NormalIconButton(
+                                icone: MdiIcons.creditCardPlusOutline,
+                                onPress: () => {},
+                                width: MediaQuery.of(context).size.width / 6,
+                                label: "Cartões",
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  ConstrainedBox(
+                    constraints: BoxConstraints.tight(
+                      Size(
+                        MediaQuery.of(context).size.width,
+                        widgetsHeight,
+                      ),
+                    ),
+                    child: LastExpenses(expenses: state.expenses),
+                  ),
+                ],
+              );
+            } else {
+              return const Text("Deu ruim!");
+            }
+          },
         ),
       ),
     );

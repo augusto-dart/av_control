@@ -110,7 +110,7 @@ class CreateUserPage extends StatelessWidget with Utils {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Image.asset(
-                          '/images/logo.png',
+                          '/images/logo_green.png',
                           width: MediaQuery.of(context).size.width / 3,
                         ),
                       ),

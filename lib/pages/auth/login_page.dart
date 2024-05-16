@@ -10,10 +10,11 @@ import 'package:av_control/pages/auth/create_user_page.dart';
 import 'package:av_control/pages/home/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class LoginPage extends StatelessWidget with Utils {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final form = FormGroup({
@@ -77,9 +78,22 @@ class LoginPage extends StatelessWidget with Utils {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Image.asset(
-                          '/images/logo_green.png',
-                          width: MediaQuery.of(context).size.width / 3,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              '/images/logo_gray_orange.png',
+                              width: MediaQuery.of(context).size.width / 4,
+                            ),
+                            Text(
+                              "Control",
+                              style: GoogleFonts.rufina(
+                                fontSize: 24.0,
+                                color: Colors.grey,
+                              ),
+                            )
+                          ],
                         ),
                       ),
                       const AvTextField(
@@ -167,7 +181,7 @@ class LoginPage extends StatelessWidget with Utils {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
-        displayToast(context, "Email ou senha inválidos!");
+        Utils.displayToast(context, "Email ou senha inválidos!");
       } else {
         print(e.code);
         print(e.message);

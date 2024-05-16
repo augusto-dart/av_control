@@ -6,7 +6,7 @@ class AvTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.controlName,
-    required this.requiredText,
+    this.requiredText = '',
     this.obscure = false,
   });
 

@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class CreateUserPage extends StatelessWidget with Utils {
+class CreateUserPage extends StatelessWidget {
   CreateUserPage({super.key});
 
   createUserWithEmail(BuildContext context) {
@@ -14,7 +14,8 @@ class CreateUserPage extends StatelessWidget with Utils {
     String confirmPassword = form.control('confirmPassword').value;
 
     if (password.length < 6) {
-      showErrorMessage(context, 'Senha deve possuir no mínimo 6 caracteres!');
+      Utils.showErrorMessage(
+          context, 'Senha deve possuir no mínimo 6 caracteres!');
       return;
     }
 
@@ -29,10 +30,10 @@ class CreateUserPage extends StatelessWidget with Utils {
               (value) => createUser(context, value),
             );
       } on FirebaseAuthException catch (e) {
-        showErrorMessage(context, e.message!);
+        Utils.showErrorMessage(context, e.message!);
       }
     } else {
-      showErrorMessage(context, 'Senhas não conferem!');
+      Utils.showErrorMessage(context, 'Senhas não conferem!');
     }
   }
 
@@ -40,7 +41,7 @@ class CreateUserPage extends StatelessWidget with Utils {
     String nome = form.control('name').value;
     credential.user!.updateDisplayName(nome);
 
-    showSucessMessage(context, 'Usuário criado com sucesso!');
+    Utils.showSucessMessage(context, 'Usuário criado com sucesso!');
     Navigator.pop(context);
   }
 

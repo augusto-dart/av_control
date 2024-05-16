@@ -44,7 +44,7 @@ class Carousel extends StatelessWidget {
                             ),
                           ),
                           Image.asset(
-                            'assets/images/logo_white.png',
+                            'assets/images/logo_orange.png',
                             width: 50,
                           ),
                         ],

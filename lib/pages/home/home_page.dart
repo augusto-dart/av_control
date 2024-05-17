@@ -1,20 +1,47 @@
+import 'dart:async';
+
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/Components/buttons/normal_button.dart';
-import 'package:av_control/models/bloc/expense_bloc.dart';
 import 'package:av_control/models/cards.dart';
+import 'package:av_control/models/expense.dart';
 import 'package:av_control/pages/auth/login_page.dart';
 import 'package:av_control/pages/home/carousel.dart';
 import 'package:av_control/pages/home/last_expenses.dart';
 import 'package:av_control/pages/home/loading_page.dart';
 import 'package:av_control/pages/register/expense_register.dart';
+import 'package:av_control/services/expense_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final User usuarioAtual = FirebaseAuth.instance.currentUser!;
+  final GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
+  final ExpenseService service = ExpenseService();
+
+  final List<Expense> expenses = [];
+
+  final List<Cards> cartoes = [
+    Cards(descricao: 'Nubank', valor: 1350),
+    Cards(descricao: 'Bradesco', valor: 2350),
+  ];
+
+  late double valorTotal = cartoes
+      .map((cartao) => cartao.valor)
+      .reduce((value, element) => value + element);
+
+  final StreamController<List<Expense>> _expenseController =
+      StreamController<List<Expense>>();
+  StreamSink<List<Expense>> get counterSink => _expenseController.sink;
+  Stream<List<Expense>> get counterStream => _expenseController.stream;
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +50,6 @@ class HomeScreen extends StatelessWidget {
         goToLogin(context);
       }
     });
-
-    final User usuarioAtual = FirebaseAuth.instance.currentUser!;
-    final GlobalKey<SliderDrawerState> drawerKey =
-        GlobalKey<SliderDrawerState>();
-
-    final List<Cards> cartoes = [
-      Cards(descricao: 'Nubank', valor: 1350),
-      Cards(descricao: 'Bradesco', valor: 2350),
-    ];
-
-    late double valorTotal = cartoes
-        .map((cartao) => cartao.valor)
-        .reduce((value, element) => value + element);
 
     String imageUrl = usuarioAtual.photoURL ?? '';
     String nome = usuarioAtual.displayName!;
@@ -96,84 +110,105 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        child: BlocBuilder<ExpenseBloc, ExpenseState>(
-          builder: (context, state) {
-            if (state is ExpenseInitial) {
-              return const LoadingPage();
-            }
-            if (state is ExpenseLoaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Valor Total',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Valor Total',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                'R\$ $valorTotal',
+                style: const TextStyle(
+                  fontSize: 24.0,
+                ),
+              ),
+            ),
+            Carousel(cartoes: cartoes),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                NormalIconButton(
+                  icone: MdiIcons.finance,
+                  width: MediaQuery.of(context).size.width / 6,
+                  label: "Nova Receita",
+                  onPress: () => {},
+                ),
+                NormalIconButton(
+                  icone: MdiIcons.chartBellCurve,
+                  width: MediaQuery.of(context).size.width / 6,
+                  label: "Nova Despesa",
+                  onPress: () => {
+                    showModalBottomSheet(
+                      elevation: 8.0,
+                      isDismissible: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16.0),
+                          topRight: Radius.circular(16.0),
+                        ),
                       ),
+                      context: context,
+                      builder: (context) {
+                        return const ExpenseRegister();
+                      },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      'R\$ $valorTotal',
-                      style: const TextStyle(
-                        fontSize: 24.0,
-                      ),
-                    ),
-                  ),
-                  Carousel(cartoes: cartoes),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      NormalIconButton(
-                        icone: MdiIcons.finance,
-                        onPress: () => {},
-                        width: MediaQuery.of(context).size.width / 6,
-                        label: "Nova Receita",
-                      ),
-                      NormalIconButton(
-                        icone: MdiIcons.chartBellCurve,
-                        onPress: () => {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return const ExpenseRegister();
-                            },
-                          ),
-                        },
-                        width: MediaQuery.of(context).size.width / 6,
-                        label: "Nova Despesa",
-                      ),
-                      NormalIconButton(
-                        icone: MdiIcons.creditCardPlusOutline,
-                        onPress: () => {},
-                        width: MediaQuery.of(context).size.width / 6,
-                        label: "Cartões",
-                      ),
-                    ],
-                  ),
-                  ConstrainedBox(
+                  },
+                ),
+                NormalIconButton(
+                  icone: MdiIcons.creditCardPlusOutline,
+                  onPress: () => {},
+                  width: MediaQuery.of(context).size.width / 6,
+                  label: "Cartões",
+                ),
+              ],
+            ),
+            StreamBuilder<List<Expense>>(
+              stream: service.getExpenses(),
+              initialData: const [],
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<Expense>> snapshot) {
+                if (snapshot.hasData) {
+                  return ConstrainedBox(
                     constraints: BoxConstraints.tight(
                       Size(
                         MediaQuery.of(context).size.width,
                         height,
                       ),
                     ),
-                    child: LastExpenses(expenses: state.expenses),
-                  ),
-                ],
-              );
-            } else {
-              return const Text("Deu ruim!");
-            }
-          },
+                    child: LastExpenses(expenses: expenses),
+                  );
+                } else {
+                  return const LoadingPage();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
   }
+
+  // child: BlocBuilder<ExpenseBloc, ExpenseState>(
+  //   builder: (context, state) {
+  //     if (state is ExpenseInitial) {
+  //
+  //     }
+  //     if (state is ExpenseLoaded) {
+
+  //
+  //     } else {
+  //       return const Text("Deu ruim!");
+  //     }
+  //   },
 
   _doLogout(BuildContext context) async {
     FirebaseAuth.instance.signOut();

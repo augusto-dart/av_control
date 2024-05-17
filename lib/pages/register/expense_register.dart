@@ -3,6 +3,8 @@ import 'package:av_control/Components/fields/text_field.dart';
 import 'package:av_control/Utils/util.dart';
 import 'package:av_control/models/bloc/expense_bloc.dart';
 import 'package:av_control/models/expense.dart';
+import 'package:av_control/services/expense_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,6 +46,9 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
       ],
     ),
   });
+  final ExpenseService service = ExpenseService();
+
+  late Expense newExpense;
 
   @override
   Widget build(BuildContext context) {
@@ -96,23 +101,29 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                     texto: 'Salvar',
                     icone: const Icon(Icons.done),
                     onPress: () => {
-                      Utils.showSucessMessage(
-                        context,
-                        'Despesa salva com sucesso!',
+                      newExpense = Expense(
+                        tipo: 1,
+                        data: form.control('date').value,
+                        descricao: form.control('description').value,
+                        categoria: form.control('category').value,
+                        cartao: form.control('card').value,
+                        valor: form.control('value').value,
+                        userId: FirebaseAuth.instance.currentUser!.uid,
                       ),
-                      context.read<ExpenseBloc>().add(
-                            AddExpense(
-                              expense: Expense(
-                                tipo: 1,
-                                data: form.control('date').value,
-                                descricao: form.control('description').value,
-                                categoria: form.control('category').value,
-                                cartao: form.control('card').value,
-                                valor: form.control('value').value,
+                      service.addExpense(newExpense).then(
+                            (value) => {
+                              Utils.showSucessMessage(
+                                context,
+                                'Despesa salva com sucesso!',
                               ),
-                            ),
+                              context.read<ExpenseBloc>().add(
+                                    AddExpense(
+                                      expense: newExpense,
+                                    ),
+                                  ),
+                              Navigator.of(context).pop(),
+                            },
                           ),
-                      Navigator.of(context).pop(),
                     },
                   ),
                 ],

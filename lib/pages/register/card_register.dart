@@ -1,55 +1,37 @@
 import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/field.dart';
-import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
-import 'package:av_control/models/enums.dart';
-import 'package:av_control/models/expense.dart';
-import 'package:av_control/services/expense_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:av_control/models/cards.dart';
+import 'package:av_control/services/cards_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class ExpenseRegister extends StatefulWidget {
-  const ExpenseRegister({super.key});
+class CardRegister extends StatefulWidget {
+  const CardRegister({super.key});
 
   @override
-  State<ExpenseRegister> createState() => _ExpenseRegisterState();
+  State<CardRegister> createState() => _CardRegisterState();
 }
 
-class _ExpenseRegisterState extends State<ExpenseRegister> {
+class _CardRegisterState extends State<CardRegister> {
   final form = FormGroup({
     'description': FormControl<String>(
       validators: [
         Validators.required,
       ],
     ),
-    'category': FormControl<String>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    'card': FormControl<String>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    'date': FormControl<DateTime>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    'value': FormControl<double>(
+    'color': FormControl<int>(
       validators: [
         Validators.required,
       ],
     ),
   });
-  final ExpenseService service = ExpenseService();
+  final CardsService service = CardsService();
 
-  late Expense newExpense;
+  late Cards newCard;
 
   @override
   Widget build(BuildContext context) {
@@ -73,52 +55,29 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
               child: Column(
                 children: [
                   Text(
-                    "Nova Despesa",
+                    "Novo Cartão",
                     style: GoogleFonts.lato(),
                   ),
                   const AvField(
                     controlName: 'description',
                     hintText: 'Descrição',
-                    requiredText: 'Informe a Descrição da Despesa',
-                  ),
-                  const AvField(
-                    controlName: 'category',
-                    hintText: 'Categoria',
-                    requiredText: 'Informe a Categoria da Despesa',
-                  ),
-                  const AvField(
-                    controlName: 'card',
-                    hintText: 'Cartão',
-                  ),
-                  const AvField(
-                    controlName: 'date',
-                    hintText: 'Data',
-                    tipo: FieldType.date,
-                  ),
-                  const AvField(
-                    controlName: 'value',
-                    hintText: 'Valor',
+                    requiredText: 'Informe a Descrição do Cartão',
                   ),
                   PrimaryButton(
                     texto: 'Salvar',
                     icone: const Icon(Icons.done),
                     onPress: () => {
-                      newExpense = Expense(
-                        tipo: ExpenseType.expense,
-                        data: Timestamp.fromDate(
-                          form.control('date').value as DateTime,
-                        ),
+                      newCard = Cards(
                         descricao: form.control('description').value,
-                        categoria: form.control('category').value,
-                        cartao: form.control('card').value,
-                        valor: form.control('value').value,
+                        valor: 0.0,
+                        cor: Colors.amber.value,
                         userId: FirebaseAuth.instance.currentUser!.uid,
                       ),
-                      service.addExpense(newExpense).then(
+                      service.addCard(newCard).then(
                             (value) => {
                               Utils.showSucessMessage(
                                 context,
-                                'Despesa salva com sucesso!',
+                                'Cartão salvo com sucesso!',
                               ),
                               Navigator.of(context).pop(),
                             },

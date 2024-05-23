@@ -1,12 +1,12 @@
+import 'package:av_control/models/enums.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-part 'expense.g.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 @JsonSerializable()
 class Expense extends Equatable {
-  final int tipo;
-  final DateTime data;
+  final ExpenseType tipo;
+  final Timestamp data;
   final String descricao;
   final String categoria;
   final String cartao;
@@ -34,9 +34,25 @@ class Expense extends Equatable {
         userId,
       ];
 
-  factory Expense.fromJson(Map<String, dynamic> json) =>
-      _$ExpenseFromJson(json);
+  factory Expense.fromJson(Map<String, dynamic> json) => Expense(
+        tipo: ExpenseType.fromJson(json['tipo'] as String),
+        data: json['data'] as Timestamp,
+        descricao: json['descricao'] as String,
+        categoria: json['categoria'] as String,
+        cartao: json['cartao'] as String,
+        valor: (json['valor'] as num).toDouble(),
+        userId: json['userId'] as String,
+      );
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$ExpenseToJson(this);
+
+  Map<String, dynamic> _$ExpenseToJson(Expense instance) => <String, dynamic>{
+        'tipo': instance.tipo.toJson(),
+        'data': instance.data,
+        'descricao': instance.descricao,
+        'categoria': instance.categoria,
+        'cartao': instance.cartao,
+        'userId': instance.userId,
+        'valor': instance.valor,
+      };
 }

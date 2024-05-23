@@ -8,6 +8,7 @@ import 'package:av_control/pages/auth/login_page.dart';
 import 'package:av_control/pages/home/carousel.dart';
 import 'package:av_control/pages/home/last_expenses.dart';
 import 'package:av_control/pages/home/loading_page.dart';
+import 'package:av_control/pages/register/card_register.dart';
 import 'package:av_control/pages/register/expense_register.dart';
 import 'package:av_control/services/expense_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,21 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
   final ExpenseService service = ExpenseService();
 
-  final List<Expense> expenses = [];
-
-  final List<Cards> cartoes = [
-    Cards(descricao: 'Nubank', valor: 1350),
-    Cards(descricao: 'Bradesco', valor: 2350),
+  final List<Cards> cards = [
+    Cards(
+      descricao: 'Nubank',
+      cor: Colors.purple.value,
+      userId: FirebaseAuth.instance.currentUser!.uid,
+    ),
+    Cards(
+      descricao: 'Bradesco',
+      cor: Colors.red.value,
+      userId: FirebaseAuth.instance.currentUser!.uid,
+    ),
   ];
-
-  late double valorTotal = cartoes
-      .map((cartao) => cartao.valor)
-      .reduce((value, element) => value + element);
-
-  final StreamController<List<Expense>> _expenseController =
-      StreamController<List<Expense>>();
-  StreamSink<List<Expense>> get counterSink => _expenseController.sink;
-  Stream<List<Expense>> get counterStream => _expenseController.stream;
 
   @override
   Widget build(BuildContext context) {
@@ -110,105 +108,122 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Valor Total',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                'R\$ $valorTotal',
-                style: const TextStyle(
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            Carousel(cartoes: cartoes),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                NormalIconButton(
-                  icone: MdiIcons.finance,
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Nova Receita",
-                  onPress: () => {},
-                ),
-                NormalIconButton(
-                  icone: MdiIcons.chartBellCurve,
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Nova Despesa",
-                  onPress: () => {
-                    showModalBottomSheet(
-                      elevation: 8.0,
-                      isDismissible: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16.0),
-                          topRight: Radius.circular(16.0),
+        child: StreamBuilder<List<Expense>>(
+          stream: service.getExpenses(),
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Expense>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingPage();
+            }
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                List<Expense> expenses = snapshot.data!;
+                double valorTotal =
+                    expenses.fold<double>(0, (sum, item) => sum + item.valor);
+
+                for (Cards card in cards) {
+                  card.setValor(expenses
+                      .where((element) => element.cartao == card.descricao)
+                      .fold(0, (sum, item) => sum + item.valor));
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Valor Total',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.grey,
                         ),
                       ),
-                      context: context,
-                      builder: (context) {
-                        return const ExpenseRegister();
-                      },
                     ),
-                  },
-                ),
-                NormalIconButton(
-                  icone: MdiIcons.creditCardPlusOutline,
-                  onPress: () => {},
-                  width: MediaQuery.of(context).size.width / 6,
-                  label: "Cartões",
-                ),
-              ],
-            ),
-            StreamBuilder<List<Expense>>(
-              stream: service.getExpenses(),
-              initialData: const [],
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<Expense>> snapshot) {
-                if (snapshot.hasData) {
-                  return ConstrainedBox(
-                    constraints: BoxConstraints.tight(
-                      Size(
-                        MediaQuery.of(context).size.width,
-                        height,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        'R\$ $valorTotal',
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                        ),
                       ),
                     ),
-                    child: LastExpenses(expenses: expenses),
-                  );
-                } else {
-                  return const LoadingPage();
-                }
-              },
-            ),
-          ],
+                    Carousel(cartoes: cards),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        NormalIconButton(
+                          icone: MdiIcons.finance,
+                          width: MediaQuery.of(context).size.width / 4,
+                          label: "Nova Receita",
+                          onPress: () => {},
+                        ),
+                        NormalIconButton(
+                          icone: MdiIcons.chartBellCurve,
+                          width: MediaQuery.of(context).size.width / 4,
+                          label: "Nova Despesa",
+                          onPress: () => {
+                            showModalBottomSheet(
+                              elevation: 8.0,
+                              isDismissible: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              context: context,
+                              builder: (context) {
+                                return const ExpenseRegister();
+                              },
+                            ),
+                          },
+                        ),
+                        NormalIconButton(
+                          icone: MdiIcons.creditCardPlusOutline,
+                          width: MediaQuery.of(context).size.width / 4,
+                          label: "Cartões",
+                          onPress: () => {
+                            showModalBottomSheet(
+                              elevation: 8.0,
+                              isDismissible: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              context: context,
+                              builder: (context) {
+                                return const CardRegister();
+                              },
+                            ),
+                          },
+                        ),
+                      ],
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tight(
+                        Size(
+                          MediaQuery.of(context).size.width,
+                          height,
+                        ),
+                      ),
+                      child: LastExpenses(expenses: expenses),
+                    ),
+                  ],
+                );
+              } else {
+                return Text(snapshot.data.toString());
+              }
+            }
+            return Text(snapshot.connectionState.name);
+          },
         ),
       ),
     );
   }
-
-  // child: BlocBuilder<ExpenseBloc, ExpenseState>(
-  //   builder: (context, state) {
-  //     if (state is ExpenseInitial) {
-  //
-  //     }
-  //     if (state is ExpenseLoaded) {
-
-  //
-  //     } else {
-  //       return const Text("Deu ruim!");
-  //     }
-  //   },
 
   _doLogout(BuildContext context) async {
     FirebaseAuth.instance.signOut();

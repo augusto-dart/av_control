@@ -18,7 +18,7 @@ class NormalIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    width ??= MediaQuery.of(context).size.width / 3;
+    width ??= MediaQuery.of(context).size.width / 3.5;
 
     final ButtonStyle style = IconButton.styleFrom(
       backgroundColor: Colors.white,

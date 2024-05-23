@@ -15,36 +15,47 @@ class Tile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          NormalIconButton(
-            icone: Icons.attach_money,
-            onPress: () => _detalhaDespesa(context, expense),
-            width: 50,
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: NormalIconButton(
+              icone: Icons.attach_money,
+              onPress: () => _detalhaDespesa(context, expense),
+              width: 50,
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                expense.descricao,
-                style: const TextStyle(
-                  fontSize: 16.0,
+          Flexible(
+            flex: 3,
+            fit: FlexFit.tight,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  expense.descricao,
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                  ),
                 ),
-              ),
-              Text(
-                "Pago com ${expense.cartao}",
-                style: const TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.grey,
+                Text(
+                  "Pago com ${expense.cartao}",
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Text(
-            "R\$ ${expense.valor}",
-            style: const TextStyle(
-              fontSize: 24.0,
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Text(
+              "R\$ ${expense.valor}",
+              style: const TextStyle(
+                fontSize: 16.0,
+              ),
             ),
           ),
         ],

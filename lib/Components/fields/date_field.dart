@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:reactive_forms/reactive_forms.dart';
+import 'package:intl/intl.dart';
+import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
 
-class AvTextField extends StatelessWidget {
-  const AvTextField({
+class AvDateField extends StatelessWidget {
+  const AvDateField({
     super.key,
     required this.controlName,
     required this.hintText,
@@ -15,16 +16,19 @@ class AvTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ReactiveTextField(
+    return ReactiveDateTimePicker(
+      dateFormat: DateFormat('dd/MM/yyyy'),
+      type: ReactiveDatePickerFieldType.date,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: hintText,
+        suffixIcon: const Icon(Icons.calendar_today),
       ),
       validationMessages: {
         'required': (error) => requiredText,
-        'email': (error) => 'Informe um email válido!'
       },
       formControlName: controlName,
+      locale: const Locale('pt', 'BR'),
     );
   }
 }

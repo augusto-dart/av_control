@@ -2,7 +2,8 @@
 
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/Components/buttons/primary_button.dart';
-import 'package:av_control/Components/fields/text_field.dart';
+import 'package:av_control/Components/fields/field.dart';
+import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
 import 'package:av_control/auth/auth_with_apple.dart';
 import 'package:av_control/auth/auth_with_google.dart';
@@ -96,16 +97,16 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const AvTextField(
+                      const AvField(
                         controlName: 'email',
                         hintText: 'E-mail',
                         requiredText: 'Informe seu Email',
                       ),
-                      const AvTextField(
+                      const AvField(
                         controlName: 'password',
                         hintText: 'Senha',
                         requiredText: 'Informe sua Senha',
-                        obscure: true,
+                        tipo: FieldType.password,
                       ),
                       ReactiveFormConsumer(
                         builder: (context, formGroup, child) => PrimaryButton(
@@ -143,13 +144,15 @@ class LoginPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text(
-                              "Ainda não possui uma conta?",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey,
+                          const Flexible(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                "Ainda não possui uma conta?",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),

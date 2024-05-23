@@ -12,6 +12,10 @@ class Carousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width > 500
+        ? 400
+        : MediaQuery.of(context).size.width;
+
     return FlutterCarousel(
       options: CarouselOptions(
         height: 200.0,
@@ -24,11 +28,11 @@ class Carousel extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.all(24.0),
               child: Card(
-                color: Theme.of(context).colorScheme.primary,
-                shadowColor: Theme.of(context).colorScheme.primary,
+                color: Color(cartao.cor),
+                shadowColor: Color(cartao.cor),
                 elevation: 8.0,
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: width,
                   margin: const EdgeInsets.symmetric(horizontal: 5.0),
                   child: Column(
                     children: [
@@ -51,7 +55,7 @@ class Carousel extends StatelessWidget {
                       ),
                       Divider(
                         height: 15,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Color(cartao.cor),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

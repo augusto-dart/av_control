@@ -1,9 +1,10 @@
-import 'package:av_control/models/bloc/expense_bloc.dart';
 import 'package:av_control/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl_browser.dart';
 import 'firebase_options.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Utils/theme.dart' as tema;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +13,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await findSystemLocale();
   runApp(const AvControlApp());
 }
 
@@ -20,26 +22,20 @@ class AvControlApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ExpenseBloc()..add(LoadExpense()),
-        ),
+    // Intl.defaultLocale = 'pt_BR';
+    return MaterialApp(
+      title: 'AV Control',
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
+      theme: tema.lighTheme,
+      darkTheme: tema.darkTheme,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
       ],
-      child: MaterialApp(
-        title: 'AV Control',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          brightness: Brightness.light,
-          useMaterial3: false,
-          colorScheme: const ColorScheme.light(
-            primary: Color.fromARGB(255, 25, 219, 138),
-            secondary: Color.fromARGB(255, 25, 219, 138),
-            tertiary: Color.fromARGB(255, 255, 161, 48),
-          ),
-        ),
-        home: LoginPage(),
-      ),
+      supportedLocales: const [Locale('pt', 'BR')],
+      locale: const Locale('pt', 'BR'),
+      home: LoginPage(),
     );
   }
 }

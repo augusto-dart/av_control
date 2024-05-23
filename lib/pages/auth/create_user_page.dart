@@ -1,8 +1,10 @@
 import 'package:av_control/Components/buttons/primary_button.dart';
-import 'package:av_control/Components/fields/text_field.dart';
+import 'package:av_control/Components/fields/field.dart';
+import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CreateUserPage extends StatelessWidget {
@@ -77,79 +79,94 @@ class CreateUserPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.tertiary,
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.tertiary,
+              ],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.3,
-              child: Card(
-                color: Colors.white,
-                elevation: 16,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: ReactiveForm(
-                  formGroup: form,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Image.asset(
-                          '/images/logo_green.png',
-                          width: MediaQuery.of(context).size.width / 3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 1.3,
+                child: Card(
+                  color: Colors.white,
+                  elevation: 16,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: ReactiveForm(
+                    formGroup: form,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '/images/logo_gray_orange.png',
+                                width: MediaQuery.of(context).size.width / 4,
+                              ),
+                              Text(
+                                "Control",
+                                style: GoogleFonts.rufina(
+                                  fontSize: 24.0,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      const AvTextField(
-                        controlName: 'name',
-                        hintText: 'Nome',
-                        requiredText: 'Informe seu Nome',
-                      ),
-                      const AvTextField(
-                        controlName: 'email',
-                        hintText: 'E-mail',
-                        requiredText: 'Informe seu Email',
-                      ),
-                      const AvTextField(
-                        controlName: 'password',
-                        hintText: 'Senha',
-                        requiredText: 'Informe sua Senha',
-                        obscure: true,
-                      ),
-                      const AvTextField(
-                        controlName: 'confirmPassword',
-                        hintText: 'Confirmar Senha',
-                        requiredText: 'Confirme sua Senha',
-                        obscure: true,
-                      ),
-                      ReactiveFormConsumer(
-                        builder: (context, formGroup, child) => PrimaryButton(
-                          icone: const Icon(Icons.login),
-                          texto: "Criar",
-                          onPress: () => createUserWithEmail(context),
+                        const AvField(
+                          controlName: 'name',
+                          hintText: 'Nome',
+                          requiredText: 'Informe seu Nome',
                         ),
-                      ),
-                    ],
+                        const AvField(
+                          controlName: 'email',
+                          hintText: 'E-mail',
+                          requiredText: 'Informe seu Email',
+                        ),
+                        const AvField(
+                          controlName: 'password',
+                          hintText: 'Senha',
+                          requiredText: 'Informe sua Senha',
+                          tipo: FieldType.password,
+                        ),
+                        const AvField(
+                          controlName: 'confirmPassword',
+                          hintText: 'Confirmar Senha',
+                          requiredText: 'Confirme sua Senha',
+                          tipo: FieldType.password,
+                        ),
+                        ReactiveFormConsumer(
+                          builder: (context, formGroup, child) => PrimaryButton(
+                            icone: const Icon(Icons.login),
+                            texto: "Criar",
+                            onPress: () => createUserWithEmail(context),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

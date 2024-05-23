@@ -14,13 +14,9 @@ class NormalButton extends StatelessWidget {
   final Function onPress;
   final bool autoSize;
 
-  final TextStyle estiloTexto = const TextStyle(
-    fontSize: 12,
-    color: Colors.grey,
-  );
-
   @override
   Widget build(BuildContext context) {
+    final TextStyle estiloTexto = Theme.of(context).textTheme.bodyMedium!;
     final double? width =
         autoSize ? null : MediaQuery.of(context).size.width / 3;
 

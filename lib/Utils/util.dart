@@ -1,12 +1,13 @@
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 
 class Utils {
-  static double height = 50.0;
+  static double height = 150.0;
   static double width = 500.0;
 
   static displayToast(BuildContext context, String message) {
-    MotionToast.warning(
+    CherryToast.warning(
       title: const Text(
         'Atenção',
         style: TextStyle(
@@ -18,14 +19,15 @@ class Utils {
       ),
       height: height,
       width: width,
-      position: MotionToastPosition.top,
+      inheritThemeColors: true,
+      toastPosition: Position.top,
       animationDuration: const Duration(milliseconds: 250),
       toastDuration: const Duration(seconds: 2),
     ).show(context);
   }
 
   static void showSucessMessage(BuildContext context, String message) {
-    MotionToast.success(
+    CherryToast.success(
       title: const Text(
         'Sucesso!',
         style: TextStyle(
@@ -37,14 +39,15 @@ class Utils {
       ),
       height: height,
       width: width,
-      position: MotionToastPosition.top,
+      inheritThemeColors: true,
+      toastPosition: Position.top,
       animationDuration: const Duration(milliseconds: 250),
       toastDuration: const Duration(seconds: 2),
     ).show(context);
   }
 
   static void showErrorMessage(BuildContext context, String message) {
-    MotionToast.error(
+    CherryToast.error(
       title: const Text(
         'Erro',
         style: TextStyle(
@@ -56,9 +59,14 @@ class Utils {
       ),
       height: height,
       width: width,
-      position: MotionToastPosition.top,
+      inheritThemeColors: true,
+      toastPosition: Position.top,
       animationDuration: const Duration(milliseconds: 250),
       toastDuration: const Duration(seconds: 2),
     ).show(context);
+  }
+
+  static bool largeScreenSize(BuildContext context) {
+    return MediaQuery.of(context).size.width > 900;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class AvPasswordField extends StatefulWidget {
@@ -26,7 +27,7 @@ class _AvPasswordFieldState extends State<AvPasswordField> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: widget.hintText,
-        suffixIcon: const Icon(Icons.remove_red_eye),
+        suffixIcon: obscure ? Icon(MdiIcons.eye) : Icon(MdiIcons.eyeOff),
       ),
       validationMessages: {
         'required': (error) => widget.requiredText,

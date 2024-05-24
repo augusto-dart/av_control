@@ -53,6 +53,8 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width - 50;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -101,7 +103,8 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                   ),
                   PrimaryButton(
                     texto: 'Salvar',
-                    icone: const Icon(Icons.done),
+                    icone: Icons.done,
+                    parentWidth: width,
                     onPress: () => {
                       newExpense = Expense(
                         tipo: ExpenseType.expense,

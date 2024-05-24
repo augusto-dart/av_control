@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, must_be_immutable
 
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/Components/buttons/primary_button.dart';
@@ -36,14 +36,18 @@ class LoginPage extends StatelessWidget {
     color: Colors.grey,
     fontSize: 12.0,
   );
+  late bool creatingUser = false;
 
   @override
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
+      if (user != null && !creatingUser) {
         goToHome(context);
       }
     });
+    final double cardWidth = Utils.largeScreenSize(context)
+        ? MediaQuery.of(context).size.width / 4
+        : MediaQuery.of(context).size.width / 1.3;
 
     return Scaffold(
       body: Container(
@@ -64,10 +68,9 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: MediaQuery.of(context).size.width / 1.3,
+              width: cardWidth,
               child: Card(
-                color: Colors.white,
-                elevation: 16,
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0),
                 ),
@@ -85,7 +88,7 @@ class LoginPage extends StatelessWidget {
                           children: [
                             Image.asset(
                               '/images/logo_gray_orange.png',
-                              width: MediaQuery.of(context).size.width / 4,
+                              width: cardWidth / 2,
                             ),
                             Text(
                               "Control",
@@ -110,9 +113,10 @@ class LoginPage extends StatelessWidget {
                       ),
                       ReactiveFormConsumer(
                         builder: (context, formGroup, child) => PrimaryButton(
-                          icone: const Icon(Icons.login),
+                          icone: Icons.done,
                           texto: "Entrar",
                           onPress: () => _doLogin(context),
+                          parentWidth: cardWidth,
                         ),
                       ),
                       const Divider(),
@@ -134,10 +138,12 @@ class LoginPage extends StatelessWidget {
                           NormalIconButton(
                             icone: MdiIcons.google,
                             onPress: () => _loginGoogle(context),
+                            parentWidth: cardWidth,
                           ),
                           NormalIconButton(
                             icone: MdiIcons.apple,
                             onPress: () => _loginApple(context),
+                            parentWidth: cardWidth,
                           ),
                         ],
                       ),
@@ -177,6 +183,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _doLogin(BuildContext context) async {
+    creatingUser = false;
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: form.control("email").value,
@@ -193,6 +200,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _criarConta(BuildContext context) {
+    creatingUser = true;
     Navigator.push(
       context,
       MaterialPageRoute(

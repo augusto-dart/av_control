@@ -3,13 +3,11 @@ import 'dart:async';
 import 'package:av_control/models/expense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class ExpenseService {
   CollectionReference coll = FirebaseFirestore.instance.collection('expenses');
 
   Future<void> addExpense(Expense expense) {
-    debugPrint(expense.toJson().toString());
     return coll.add(expense.toJson());
   }
 

@@ -35,29 +35,23 @@ class _LastExpensesState extends State<LastExpenses> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
         ),
-        elevation: 6.0,
-        shadowColor: Colors.blueGrey,
+        elevation: 0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 "Histórico de Transações",
-                style: TextStyle(
-                  fontSize: 16.0,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: Text(
                 "Lista de todas as transações já realizadas",
-                style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.grey,
-                ),
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
             Padding(

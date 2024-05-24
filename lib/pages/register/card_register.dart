@@ -35,6 +35,7 @@ class _CardRegisterState extends State<CardRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width - 50;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -65,7 +66,8 @@ class _CardRegisterState extends State<CardRegister> {
                   ),
                   PrimaryButton(
                     texto: 'Salvar',
-                    icone: const Icon(Icons.done),
+                    icone: Icons.done,
+                    parentWidth: width,
                     onPress: () => {
                       newCard = Cards(
                         descricao: form.control('description').value,

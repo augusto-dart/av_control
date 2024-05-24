@@ -6,6 +6,7 @@ class NormalButton extends StatelessWidget {
     required this.texto,
     required this.icone,
     required this.onPress,
+    required this.parentWidth,
     this.autoSize = false,
   });
 
@@ -13,12 +14,12 @@ class NormalButton extends StatelessWidget {
   final IconData icone;
   final Function onPress;
   final bool autoSize;
+  final double parentWidth;
 
   @override
   Widget build(BuildContext context) {
     final TextStyle estiloTexto = Theme.of(context).textTheme.bodyMedium!;
-    final double? width =
-        autoSize ? null : MediaQuery.of(context).size.width / 3;
+    final double? width = autoSize ? null : parentWidth / 3;
 
     final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: estiloTexto,

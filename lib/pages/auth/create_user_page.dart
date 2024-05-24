@@ -44,7 +44,6 @@ class CreateUserPage extends StatelessWidget {
     credential.user!.updateDisplayName(nome);
 
     Utils.showSucessMessage(context, 'Usuário criado com sucesso!');
-    Navigator.pop(context);
   }
 
   final form = FormGroup({
@@ -73,6 +72,10 @@ class CreateUserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double cardWidth = Utils.largeScreenSize(context)
+        ? MediaQuery.of(context).size.width / 4
+        : MediaQuery.of(context).size.width / 1.3;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Criar conta"),
@@ -98,10 +101,9 @@ class CreateUserPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width / 1.3,
+                width: cardWidth,
                 child: Card(
-                  color: Colors.white,
-                  elevation: 16,
+                  elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.0),
                   ),
@@ -119,7 +121,7 @@ class CreateUserPage extends StatelessWidget {
                             children: [
                               Image.asset(
                                 '/images/logo_gray_orange.png',
-                                width: MediaQuery.of(context).size.width / 4,
+                                width: cardWidth / 2,
                               ),
                               Text(
                                 "Control",
@@ -155,9 +157,10 @@ class CreateUserPage extends StatelessWidget {
                         ),
                         ReactiveFormConsumer(
                           builder: (context, formGroup, child) => PrimaryButton(
-                            icone: const Icon(Icons.login),
+                            icone: Icons.done,
                             texto: "Criar",
                             onPress: () => createUserWithEmail(context),
+                            parentWidth: cardWidth,
                           ),
                         ),
                       ],

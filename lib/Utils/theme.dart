@@ -7,8 +7,8 @@ Color secondaryTextLight = const Color.fromARGB(255, 20, 24, 27);
 Color info = const Color.fromARGB(255, 87, 99, 108);
 Color onPrimary = const Color.fromARGB(255, 255, 255, 255);
 
-Color primaryTextDark = const Color.fromARGB(255, 20, 24, 27);
-Color secondaryTextDark = const Color.fromARGB(255, 20, 24, 27);
+Color primaryTextDark = const Color.fromARGB(255, 255, 255, 255);
+Color secondaryTextDark = const Color.fromARGB(255, 250, 250, 250);
 
 // Cores Principais
 Color primary = const Color.fromARGB(255, 25, 219, 138);
@@ -25,8 +25,8 @@ Color secondaryBackgroundLight = const Color.fromARGB(255, 255, 255, 255);
 
 Color alternateDark = const Color.fromARGB(255, 43, 50, 59);
 Color accent4Dark = const Color.fromARGB(171, 43, 50, 59);
-Color primaryBackgroundDark = const Color.fromARGB(255, 20, 24, 27);
-Color secondaryBackgroundDark = const Color.fromARGB(255, 29, 36, 41);
+Color primaryBackgroundDark = const Color.fromARGB(255, 31, 31, 31);
+Color secondaryBackgroundDark = const Color.fromARGB(255, 41, 41, 41);
 
 ThemeData lighTheme = ThemeData(
   brightness: Brightness.light,
@@ -122,8 +122,9 @@ ThemeData darkTheme = ThemeData(
     secondary: secondary,
     tertiary: tertiary,
     inversePrimary: accent1,
-    surface: secondaryBackgroundLight,
-    background: primaryBackgroundLight,
+    surface: secondaryBackgroundDark,
+    surfaceVariant: secondaryBackgroundDark,
+    background: primaryBackgroundDark,
     onPrimary: onPrimary,
     brightness: Brightness.dark,
   ),
@@ -142,7 +143,7 @@ ThemeData darkTheme = ThemeData(
       fontWeight: FontWeight.bold,
     ),
     headlineLarge: GoogleFonts.inter(
-      fontSize: 24,
+      fontSize: 32,
       color: primaryTextDark,
     ),
     headlineMedium: GoogleFonts.inter(
@@ -151,7 +152,7 @@ ThemeData darkTheme = ThemeData(
       fontWeight: FontWeight.normal,
     ),
     headlineSmall: GoogleFonts.inter(
-      fontSize: 24,
+      fontSize: 20,
       color: primaryTextDark,
       fontWeight: FontWeight.normal,
     ),

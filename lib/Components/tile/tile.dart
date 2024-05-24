@@ -12,6 +12,7 @@ class Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double width = 200.0;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -23,6 +24,7 @@ class Tile extends StatelessWidget {
               icone: Icons.attach_money,
               onPress: () => _detalhaDespesa(context, expense),
               width: 50,
+              parentWidth: width,
             ),
           ),
           Flexible(

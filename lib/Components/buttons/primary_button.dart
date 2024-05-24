@@ -7,11 +7,13 @@ class PrimaryButton extends StatelessWidget {
     required this.texto,
     required this.icone,
     required this.onPress,
+    required this.parentWidth,
   });
 
   final String texto;
-  final Icon icone;
+  final IconData icone;
   final Function onPress;
+  final double parentWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +27,21 @@ class PrimaryButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.primary,
     );
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         height: 48,
-        width: MediaQuery.of(context).size.width / 1.3,
+        width: parentWidth,
         child: ElevatedButton.icon(
           onPressed: () => onPress.call(),
           style: style,
-          icon: icone,
+          icon: Icon(
+            icone,
+            color: Colors.white,
+          ),
           label: Text(
             texto,
             style: estiloTexto,

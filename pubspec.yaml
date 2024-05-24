@@ -19,7 +19,6 @@ dependencies:
   firebase_analytics: ^10.8.9
   reactive_forms: ^17.0.0
   material_design_icons_flutter: ^7.0.7296
-  motion_toast: ^2.9.1
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^5.0.0
   crypto: ^3.0.3
@@ -35,6 +34,7 @@ dependencies:
   reactive_date_time_picker: ^3.0.1
   date_format: ^2.0.7
   intl: ^0.18.1
+  cherry_toast: ^1.10.1
 
 dev_dependencies:
   flutter_test:

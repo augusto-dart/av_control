@@ -51,15 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String imageUrl = usuarioAtual.photoURL ?? '';
     String nome = usuarioAtual.displayName!;
-    double height = MediaQuery.of(context).size.height - 405;
+    double height = MediaQuery.of(context).size.height - 415;
 
     return Scaffold(
       body: SliderDrawer(
+        isDraggable: true,
+        splashColor: Theme.of(context).colorScheme.primary,
         key: drawerKey,
-        appBar: const SliderAppBar(
-          appBarColor: Colors.white,
-          title: Text(""),
-        ),
         slider: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
@@ -94,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPress: () {},
               texto: 'Meu Perfil',
               autoSize: true,
+              parentWidth: 0.0,
             ),
             TextButton.icon(
               onPressed: () => _doLogout(context),
@@ -108,118 +107,121 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: StreamBuilder<List<Expense>>(
-          stream: service.getExpenses(),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Expense>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingPage();
-            }
-            if (snapshot.connectionState == ConnectionState.active) {
-              if (snapshot.hasData) {
-                List<Expense> expenses = snapshot.data!;
-                double valorTotal =
-                    expenses.fold<double>(0, (sum, item) => sum + item.valor);
-
-                for (Cards card in cards) {
-                  card.setValor(expenses
-                      .where((element) => element.cartao == card.descricao)
-                      .fold(0, (sum, item) => sum + item.valor));
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Valor Total',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        'R\$ $valorTotal',
-                        style: const TextStyle(
-                          fontSize: 24.0,
-                        ),
-                      ),
-                    ),
-                    Carousel(cartoes: cards),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        NormalIconButton(
-                          icone: MdiIcons.finance,
-                          width: MediaQuery.of(context).size.width / 4,
-                          label: "Nova Receita",
-                          onPress: () => {},
-                        ),
-                        NormalIconButton(
-                          icone: MdiIcons.chartBellCurve,
-                          width: MediaQuery.of(context).size.width / 4,
-                          label: "Nova Despesa",
-                          onPress: () => {
-                            showModalBottomSheet(
-                              elevation: 8.0,
-                              isDismissible: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return const ExpenseRegister();
-                              },
-                            ),
-                          },
-                        ),
-                        NormalIconButton(
-                          icone: MdiIcons.creditCardPlusOutline,
-                          width: MediaQuery.of(context).size.width / 4,
-                          label: "Cartões",
-                          onPress: () => {
-                            showModalBottomSheet(
-                              elevation: 8.0,
-                              isDismissible: true,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return const CardRegister();
-                              },
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints.tight(
-                        Size(
-                          MediaQuery.of(context).size.width,
-                          height,
-                        ),
-                      ),
-                      child: LastExpenses(expenses: expenses),
-                    ),
-                  ],
-                );
-              } else {
-                return Text(snapshot.data.toString());
+        child: Container(
+          color: Theme.of(context).colorScheme.background,
+          child: StreamBuilder<List<Expense>>(
+            stream: service.getExpenses(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Expense>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const LoadingPage();
               }
-            }
-            return Text(snapshot.connectionState.name);
-          },
+              if (snapshot.connectionState == ConnectionState.active) {
+                if (snapshot.hasData) {
+                  List<Expense> expenses = snapshot.data!;
+                  double valorTotal =
+                      expenses.fold<double>(0, (sum, item) => sum + item.valor);
+
+                  for (Cards card in cards) {
+                    card.setValor(expenses
+                        .where((element) => element.cartao == card.descricao)
+                        .fold(0, (sum, item) => sum + item.valor));
+                  }
+
+                  final double width = MediaQuery.of(context).size.width;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Valor Total',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          'R\$ $valorTotal',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      Carousel(cartoes: cards),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          NormalIconButton(
+                            icone: MdiIcons.finance,
+                            width: width / 4,
+                            parentWidth: width,
+                            label: "Nova Receita",
+                            onPress: () => {},
+                          ),
+                          NormalIconButton(
+                            icone: MdiIcons.chartBellCurve,
+                            width: width / 4,
+                            parentWidth: width,
+                            label: "Nova Despesa",
+                            onPress: () => {
+                              showModalBottomSheet(
+                                elevation: 8.0,
+                                isDismissible: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16.0),
+                                    topRight: Radius.circular(16.0),
+                                  ),
+                                ),
+                                context: context,
+                                builder: (context) {
+                                  return const ExpenseRegister();
+                                },
+                              ),
+                            },
+                          ),
+                          NormalIconButton(
+                            icone: MdiIcons.creditCardPlusOutline,
+                            width: width / 4,
+                            parentWidth: width,
+                            label: "Cartões",
+                            onPress: () => {
+                              showModalBottomSheet(
+                                elevation: 8.0,
+                                isDismissible: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16.0),
+                                    topRight: Radius.circular(16.0),
+                                  ),
+                                ),
+                                context: context,
+                                builder: (context) {
+                                  return const CardRegister();
+                                },
+                              ),
+                            },
+                          ),
+                        ],
+                      ),
+                      ConstrainedBox(
+                        constraints: BoxConstraints.tight(
+                          Size(
+                            MediaQuery.of(context).size.width,
+                            height,
+                          ),
+                        ),
+                        child: LastExpenses(expenses: expenses),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Text(snapshot.data.toString());
+                }
+              }
+              return Text(snapshot.connectionState.name);
+            },
+          ),
         ),
       ),
     );

@@ -7,6 +7,7 @@ class NormalIconButton extends StatelessWidget {
     super.key,
     required this.icone,
     required this.onPress,
+    required this.parentWidth,
     this.label = "",
     this.width,
   });
@@ -14,14 +15,14 @@ class NormalIconButton extends StatelessWidget {
   final IconData icone;
   final Function onPress;
   late double? width;
+  final double parentWidth;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    width ??= MediaQuery.of(context).size.width / 3.5;
+    width ??= parentWidth / 3.5;
 
     final ButtonStyle style = IconButton.styleFrom(
-      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),

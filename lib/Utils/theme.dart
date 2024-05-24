@@ -28,7 +28,7 @@ Color accent4Dark = const Color.fromARGB(171, 43, 50, 59);
 Color primaryBackgroundDark = const Color.fromARGB(255, 31, 31, 31);
 Color secondaryBackgroundDark = const Color.fromARGB(255, 41, 41, 41);
 
-ThemeData lighTheme = ThemeData(
+ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   useMaterial3: true,
   colorScheme: ColorScheme.light(
@@ -36,11 +36,12 @@ ThemeData lighTheme = ThemeData(
     secondary: secondary,
     tertiary: tertiary,
     inversePrimary: accent1,
-    background: primaryBackgroundLight,
-    surface: secondaryBackgroundLight,
+    surfaceContainer: primaryBackgroundLight,
+    surface: primaryBackgroundLight,
     brightness: Brightness.light,
     onPrimary: onPrimary,
   ),
+  dividerColor: secondaryBackgroundLight,
   textTheme: TextTheme(
     displayLarge: GoogleFonts.inter(
       fontSize: 57,
@@ -122,12 +123,12 @@ ThemeData darkTheme = ThemeData(
     secondary: secondary,
     tertiary: tertiary,
     inversePrimary: accent1,
+    surfaceContainer: secondaryBackgroundDark,
     surface: secondaryBackgroundDark,
-    surfaceVariant: secondaryBackgroundDark,
-    background: primaryBackgroundDark,
     onPrimary: onPrimary,
     brightness: Brightness.dark,
   ),
+  dividerColor: primaryBackgroundDark,
   textTheme: TextTheme(
     displayLarge: GoogleFonts.inter(
       fontSize: 57,

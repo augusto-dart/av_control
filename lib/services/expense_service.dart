@@ -11,13 +11,13 @@ class ExpenseService {
     return coll.add(expense.toJson());
   }
 
-  Stream<List<Expense>> getExpenses() {
+  Future<List<Expense>> getExpenses() {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     return coll
         .where('userId', isEqualTo: userId)
         .orderBy('data', descending: true)
-        .snapshots()
-        .map(
+        .get()
+        .then(
           (event) => event.docs
               .map(
                 (doc) => Expense.fromJson(

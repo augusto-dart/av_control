@@ -2,12 +2,14 @@ import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
+import 'package:av_control/models/bloc/expense_bloc.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:av_control/services/expense_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -123,6 +125,9 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                                 context,
                                 'Despesa salva com sucesso!',
                               ),
+                              context.read<ExpenseBloc>().add(
+                                    AddExpense(expense: newExpense),
+                                  ),
                               Navigator.of(context).pop(),
                             },
                           ),

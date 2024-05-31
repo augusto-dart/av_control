@@ -1,4 +1,5 @@
 import 'package:av_control/Components/buttons/icon_button.dart';
+import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,10 @@ class Tile extends StatelessWidget {
   const Tile({
     super.key,
     required this.expense,
+    required this.card,
   });
 
+  final Cards? card;
   final Expense expense;
 
   @override
@@ -43,7 +46,7 @@ class Tile extends StatelessWidget {
                 ),
                 Text(
                   expense.tipo == ExpenseType.expense
-                      ? "Pago com ${expense.cartao}"
+                      ? "Pago com ${card != null ? card!.descricao : expense.cartao}"
                       : "",
                   style: const TextStyle(
                     fontSize: 12.0,

@@ -2,7 +2,7 @@ import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
-import 'package:av_control/models/bloc/expense_bloc.dart';
+import 'package:av_control/models/bloc/expense/expense_bloc.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:av_control/services/expense_service.dart';

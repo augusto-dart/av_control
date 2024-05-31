@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:av_control/models/enums.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -17,7 +19,7 @@ class Expense extends Equatable {
     return tipo == ExpenseType.expense ? valor * -1 : valor;
   }
 
-  const Expense({
+  Expense({
     required this.tipo,
     required this.data,
     required this.descricao,

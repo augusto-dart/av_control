@@ -3,7 +3,8 @@
 import 'dart:async';
 
 import 'package:av_control/Components/buttons/icon_button.dart';
-import 'package:av_control/models/bloc/expense_bloc.dart';
+import 'package:av_control/models/bloc/cards/cards_bloc.dart';
+import 'package:av_control/models/bloc/expense/expense_bloc.dart';
 import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
@@ -26,8 +27,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeScreen extends StatelessWidget {
   final GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
+  final CardsService cardsService = CardsService();
   final ExpenseService service = ExpenseService();
-
   final List<Expense> fakeExpenses = List.generate(
     10,
     (index) {
@@ -47,7 +48,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late List<Cards> cards = [];
+
     (context.read<ExpenseBloc>()).add(const ClearExpenses());
+    (context.read<CardsBloc>()).add(const ClearCards());
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         goToLogin(context);
@@ -59,14 +63,18 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       body: FutureBuilder(
-        future: service.getExpenses(),
-        builder: (context, build) {
-          if (build.hasData) {
+        future: Future.wait([
+          service.getExpenses(),
+          cardsService.getCards(),
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            context
+                .read<CardsBloc>()
+                .add(AddCards(cards: (snapshot.data![1] as List<Cards>)));
             context.read<ExpenseBloc>().add(
-                  AddExpenses(expenses: build.data!),
-                );
+                AddExpenses(expenses: (snapshot.data![0] as List<Expense>)));
           }
-
           return SliderDrawer(
             appBar: SliderAppBar(
               appBarColor: Theme.of(context).colorScheme.surface,
@@ -82,20 +90,20 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BlocBuilder<ExpenseBloc, ExpenseState>(
+                  BlocBuilder<CardsBloc, CardsState>(
                     builder: (context, state) {
-                      if (state is ExpenseLoaded) {
-                        List<Expense> expenses = state.expenses;
+                      if (state is CardsLoaded) {
+                        cards = state.cards;
+                        cards
+                            .sort((a, b) => a.descricao.compareTo(b.descricao));
                         return HomeTopWidget(
-                          expenses: expenses,
-                          cards: _getCards(),
+                          cards: cards,
                         );
                       } else {
-                        return Skeletonizer(
+                        return const Skeletonizer(
                           enabled: true,
                           child: HomeTopWidget(
-                            expenses: const [],
-                            cards: Future.delayed((Duration.zero), () => []),
+                            cards: [],
                           ),
                         );
                       }
@@ -124,7 +132,9 @@ class HomeScreen extends StatelessWidget {
                         onPress: () => {
                           _callNewPage(
                             context,
-                            const ExpenseRegister(),
+                            ExpenseRegister(
+                              cartoes: cards,
+                            ),
                           ),
                         },
                       ),
@@ -144,7 +154,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   BlocBuilder<ExpenseBloc, ExpenseState>(
                     builder: (context, state) {
-                      if (state is ExpenseLoaded) {
+                      if (state is ExpenseLoaded &&
+                          context.read<CardsBloc>().state is CardsLoaded) {
                         return ConstrainedBox(
                           constraints: BoxConstraints.tight(
                             Size(
@@ -152,7 +163,10 @@ class HomeScreen extends StatelessWidget {
                               height,
                             ),
                           ),
-                          child: LastExpenses(expenses: state.expenses),
+                          child: LastExpenses(
+                            expenses: state.expenses,
+                            cards: cards,
+                          ),
                         );
                       } else {
                         return Skeletonizer(
@@ -164,7 +178,10 @@ class HomeScreen extends StatelessWidget {
                                 height,
                               ),
                             ),
-                            child: LastExpenses(expenses: fakeExpenses),
+                            child: LastExpenses(
+                              expenses: fakeExpenses,
+                              cards: const [],
+                            ),
                           ),
                         );
                       }
@@ -188,11 +205,6 @@ class HomeScreen extends StatelessWidget {
             (route) => false);
       },
     );
-  }
-
-  Future<List<Cards>> _getCards() async {
-    CardsService cardService = CardsService();
-    return cardService.getCards();
   }
 
   _callNewPage(BuildContext context, Widget page) {

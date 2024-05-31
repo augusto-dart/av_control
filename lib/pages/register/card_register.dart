@@ -1,10 +1,12 @@
 import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Utils/util.dart';
+import 'package:av_control/models/bloc/cards/cards_bloc.dart';
 import 'package:av_control/models/cards.dart';
 import 'package:av_control/services/cards_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -98,10 +100,16 @@ class _CardRegisterState extends State<CardRegister> {
                       ),
                       service.addCard(newCard).then(
                             (value) => {
+                              newCard.id = value,
                               Utils.showSucessMessage(
                                 context,
                                 'Cartão salvo com sucesso!',
                               ),
+                              context.read<CardsBloc>().add(
+                                    AddCard(
+                                      card: newCard,
+                                    ),
+                                  ),
                               Navigator.of(context).pop(),
                             },
                           ),

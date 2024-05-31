@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:av_control/Components/tile/tile.dart';
+import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,10 @@ class LastExpenses extends StatefulWidget {
   const LastExpenses({
     super.key,
     required this.expenses,
+    required this.cards,
   });
-
   final List<Expense> expenses;
+  final List<Cards> cards;
 
   @override
   State<LastExpenses> createState() => _LastExpensesState();
@@ -20,9 +22,21 @@ class LastExpenses extends StatefulWidget {
 class _LastExpensesState extends State<LastExpenses> {
   late ExpenseType selectedType = ExpenseType.all;
   late List<Expense> filteredExpenses;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // if (widget.cards.isNotEmpty) {
+    //   for (int i = 0; i < widget.expenses.length; i++) {
+    //     Expense despesa = widget.expenses[i];
+    //     Cards card =
+    //         widget.cards.where((card) => card.id == despesa.cartao).first;
+    //     despesa.nomeCartao = card.descricao;
+    //   }
+    // }
     filteredExpenses = widget.expenses
         .where((x) => selectedType == ExpenseType.all || x.tipo == selectedType)
         .toList();
@@ -73,7 +87,12 @@ class _LastExpensesState extends State<LastExpenses> {
                 itemCount: filteredExpenses.length,
                 padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
-                  return Tile(expense: filteredExpenses[index]);
+                  return Tile(
+                      expense: filteredExpenses[index],
+                      card: widget.cards
+                          .where((card) =>
+                              card.id == filteredExpenses[index].cartao)
+                          .firstOrNull);
                 },
                 separatorBuilder: (BuildContext context, int index) => Divider(
                   color: Theme.of(context).dividerColor,

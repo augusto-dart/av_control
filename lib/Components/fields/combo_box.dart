@@ -7,8 +7,10 @@ class AvCombobox extends StatelessWidget {
     required this.label,
     required this.data,
     required this.controlName,
+    required this.hintText,
   });
 
+  final String hintText;
   final String label;
   final List<DropdownMenuItem> data;
   final String controlName;
@@ -18,6 +20,10 @@ class AvCombobox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ReactiveDropdownField(
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          hintText: hintText,
+        ),
         items: data,
         formControlName: controlName,
         hint: Text(label),

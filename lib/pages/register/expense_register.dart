@@ -3,7 +3,8 @@ import 'package:av_control/Components/fields/combo_box.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
-import 'package:av_control/models/bloc/expense_bloc.dart';
+import 'package:av_control/models/bloc/cards/cards_bloc.dart';
+import 'package:av_control/models/bloc/expense/expense_bloc.dart';
 import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
@@ -18,7 +19,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:reactive_forms/reactive_forms.dart';
 
 class ExpenseRegister extends StatefulWidget {
-  const ExpenseRegister({super.key});
+  const ExpenseRegister({
+    super.key,
+    required this.cartoes,
+  });
+
+  final List<Cards> cartoes;
 
   @override
   State<ExpenseRegister> createState() => _ExpenseRegisterState();
@@ -52,35 +58,31 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
       ],
     ),
   });
+  final CardsService cardsService = CardsService();
   final ExpenseService service = ExpenseService();
-  final CardsService cardService = CardsService();
 
   late Expense newExpense;
   late List<DropdownMenuItem> cartoes = [];
 
   @override
   void initState() {
+    for (int i = 0; i < widget.cartoes.length; i++) {
+      cartoes.add(
+        DropdownMenuItem(
+          value: widget.cartoes[i].id,
+          child: Text(
+            widget.cartoes[i].descricao,
+          ),
+        ),
+      );
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width - 50;
-    _getCards().then(
-      (cards) {
-        for (int i = 0; i < cards.length; i++) {
-          cartoes.add(
-            DropdownMenuItem(
-              value: cards[i],
-              child: Text(
-                cards[i],
-              ),
-            ),
-          );
-        }
-      },
-    );
-
+    Cards selectedCard;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -117,6 +119,7 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                   AvCombobox(
                     data: cartoes,
                     label: 'Cartão',
+                    hintText: 'Cartão',
                     controlName: 'card',
                   ),
                   const AvField(
@@ -150,9 +153,18 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                                 context,
                                 'Despesa salva com sucesso!',
                               ),
-                              context.read<ExpenseBloc>().add(
-                                    AddExpense(expense: newExpense),
-                                  ),
+                              selectedCard = widget.cartoes
+                                  .where((cartao) =>
+                                      cartao.id == newExpense.cartao)
+                                  .first,
+                              context
+                                  .read<ExpenseBloc>()
+                                  .add(AddExpense(expense: newExpense)),
+                              selectedCard.valor += newExpense.valor,
+                              cardsService.updateCard(selectedCard),
+                              context
+                                  .read<CardsBloc>()
+                                  .add(UpdateCard(card: selectedCard)),
                               Navigator.of(context).pop(),
                             },
                           ),
@@ -165,10 +177,5 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
         ),
       ),
     );
-  }
-
-  Future<List<String>> _getCards() async {
-    List<Cards> cards = await cardService.getCards();
-    return cards.map((card) => card.descricao).toList();
   }
 }

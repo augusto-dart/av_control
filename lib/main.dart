@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:av_control/Utils/app_bloc_observer.dart';
 import 'package:av_control/Utils/theme_cubit.dart';
-import 'package:av_control/models/bloc/expense_bloc.dart';
+import 'package:av_control/models/bloc/cards/cards_bloc.dart';
+import 'package:av_control/models/bloc/expense/expense_bloc.dart';
 import 'package:av_control/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,13 +33,19 @@ class AvControlApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (_) => ThemeCubit(),
+        ),
+        BlocProvider(
           create: (context) => ExpenseBloc()
             ..add(
               const LoadExpense(expenses: []),
             ),
         ),
         BlocProvider(
-          create: (_) => ThemeCubit(),
+          create: (context) => CardsBloc()
+            ..add(
+              const LoadCards(cards: []),
+            ),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeData>(

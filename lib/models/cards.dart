@@ -1,10 +1,20 @@
-class Cards {
+// ignore_for_file: must_be_immutable
+
+import 'package:equatable/equatable.dart';
+
+class Cards implements Equatable {
   Cards({
     required this.descricao,
     required this.cor,
     required this.userId,
     this.valor = 0.0,
   });
+
+  late final String _id;
+  String get id => _id;
+  set id(String value) {
+    _id = value;
+  }
 
   final String descricao;
   final int cor;
@@ -30,4 +40,10 @@ class Cards {
         'cor': instance.cor,
         'userId': instance.userId,
       };
+
+  @override
+  List<Object?> get props => [id];
+
+  @override
+  bool? get stringify => true;
 }

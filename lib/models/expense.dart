@@ -13,6 +13,10 @@ class Expense extends Equatable {
   final String userId;
   final double valor;
 
+  double get valorCalc {
+    return tipo == ExpenseType.expense ? valor * -1 : valor;
+  }
+
   const Expense({
     required this.tipo,
     required this.data,

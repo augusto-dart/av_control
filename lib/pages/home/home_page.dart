@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/models/bloc/expense_bloc.dart';
+import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:av_control/pages/auth/login_page.dart';
@@ -12,6 +13,8 @@ import 'package:av_control/pages/home/Components/home_top_widget.dart';
 import 'package:av_control/pages/home/Components/last_expenses.dart';
 import 'package:av_control/pages/register/card_register.dart';
 import 'package:av_control/pages/register/expense_register.dart';
+import 'package:av_control/pages/register/receive_register.dart';
+import 'package:av_control/services/cards_service.dart';
 import 'package:av_control/services/expense_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,6 +66,7 @@ class HomeScreen extends StatelessWidget {
                   AddExpenses(expenses: build.data!),
                 );
           }
+
           return SliderDrawer(
             appBar: SliderAppBar(
               appBarColor: Theme.of(context).colorScheme.surface,
@@ -82,11 +86,17 @@ class HomeScreen extends StatelessWidget {
                     builder: (context, state) {
                       if (state is ExpenseLoaded) {
                         List<Expense> expenses = state.expenses;
-                        return HomeTopWidget(expenses: expenses);
+                        return HomeTopWidget(
+                          expenses: expenses,
+                          cards: _getCards(),
+                        );
                       } else {
                         return Skeletonizer(
                           enabled: true,
-                          child: HomeTopWidget(expenses: const []),
+                          child: HomeTopWidget(
+                            expenses: const [],
+                            cards: Future.delayed((Duration.zero), () => []),
+                          ),
                         );
                       }
                     },
@@ -99,7 +109,12 @@ class HomeScreen extends StatelessWidget {
                         width: width / 4,
                         parentWidth: width,
                         label: "Nova Receita",
-                        onPress: () => {},
+                        onPress: () => {
+                          _callNewPage(
+                            context,
+                            const ReceiveRegister(),
+                          ),
+                        },
                       ),
                       NormalIconButton(
                         icone: MdiIcons.chartBellCurve,
@@ -107,19 +122,9 @@ class HomeScreen extends StatelessWidget {
                         parentWidth: width,
                         label: "Nova Despesa",
                         onPress: () => {
-                          showModalBottomSheet(
-                            elevation: 8.0,
-                            isDismissible: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context) {
-                              return const ExpenseRegister();
-                            },
+                          _callNewPage(
+                            context,
+                            const ExpenseRegister(),
                           ),
                         },
                       ),
@@ -129,19 +134,9 @@ class HomeScreen extends StatelessWidget {
                         parentWidth: width,
                         label: "Cartões",
                         onPress: () => {
-                          showModalBottomSheet(
-                            elevation: 8.0,
-                            isDismissible: true,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16.0),
-                                topRight: Radius.circular(16.0),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context) {
-                              return const CardRegister();
-                            },
+                          _callNewPage(
+                            context,
+                            const CardRegister(),
                           ),
                         },
                       ),
@@ -191,6 +186,28 @@ class HomeScreen extends StatelessWidget {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => LoginPage()),
             (route) => false);
+      },
+    );
+  }
+
+  Future<List<Cards>> _getCards() async {
+    CardsService cardService = CardsService();
+    return cardService.getCards();
+  }
+
+  _callNewPage(BuildContext context, Widget page) {
+    showModalBottomSheet(
+      elevation: 8.0,
+      isDismissible: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return page;
       },
     );
   }

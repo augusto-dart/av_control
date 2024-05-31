@@ -11,9 +11,9 @@ class CardsService {
     return coll.add(card.toJson());
   }
 
-  Stream<List<Cards>> getCards() {
+  Future<List<Cards>> getCards() {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    return coll.where('userId', isEqualTo: userId).snapshots().map(
+    return coll.where('userId', isEqualTo: userId).get().then(
           (event) => event.docs
               .map(
                 (doc) => Cards.fromJson(

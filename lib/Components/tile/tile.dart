@@ -1,4 +1,5 @@
 import 'package:av_control/Components/buttons/icon_button.dart';
+import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,9 @@ class Tile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Pago com ${expense.cartao}",
+                  expense.tipo == ExpenseType.expense
+                      ? "Pago com ${expense.cartao}"
+                      : "",
                   style: const TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey,

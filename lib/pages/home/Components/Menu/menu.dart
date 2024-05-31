@@ -1,6 +1,4 @@
-import 'package:av_control/Components/buttons/normal_button.dart';
 import 'package:av_control/Utils/theme_cubit.dart';
-import 'package:av_control/pages/home/Components/ad.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,19 +57,7 @@ class MenuWidget extends StatelessWidget {
             );
           },
         ),
-        NormalButton(
-          texto: 'Ver anúncio',
-          icone: Icons.ad_units_outlined,
-          onPress: () => {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return const AdSense();
-              },
-            ),
-          },
-          parentWidth: MediaQuery.of(context).size.width,
-        ),
+        // const AdSense(),
         Divider(
           height: MediaQuery.of(context).size.height - 200,
           color: Theme.of(context).dividerColor,

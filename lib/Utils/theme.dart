@@ -20,8 +20,8 @@ Color accent3 = const Color.fromARGB(77, 255, 161, 48);
 
 Color accent4Light = const Color.fromARGB(77, 224, 227, 231);
 Color alternateLight = const Color.fromARGB(255, 224, 227, 231);
-Color primaryBackgroundLight = const Color.fromARGB(255, 241, 244, 248);
-Color secondaryBackgroundLight = const Color.fromARGB(255, 255, 255, 255);
+Color primaryBackgroundLight = const Color.fromARGB(255, 255, 255, 255);
+Color secondaryBackgroundLight = const Color.fromARGB(255, 179, 179, 179);
 
 Color alternateDark = const Color.fromARGB(255, 43, 50, 59);
 Color accent4Dark = const Color.fromARGB(171, 43, 50, 59);

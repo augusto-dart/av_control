@@ -21,14 +21,7 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   final GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
   final ExpenseService service = ExpenseService();
 
@@ -47,14 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   );
 
-  @override
-  void initState() {
-    super.initState();
-    (context.read<ExpenseBloc>()).add(const ClearExpenses());
-  }
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    (context.read<ExpenseBloc>()).add(const ClearExpenses());
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         goToLogin(context);

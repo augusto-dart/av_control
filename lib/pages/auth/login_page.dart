@@ -221,7 +221,7 @@ class LoginPage extends StatelessWidget {
   void goToHome(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 }

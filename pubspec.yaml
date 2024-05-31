@@ -37,11 +37,12 @@ dependencies:
   intl: 
   cherry_toast:
   skeletonizer:
+  google_mobile_ads: ^5.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons:
   flutter_lints:
   build_runner:
   json_serializable:
@@ -50,3 +51,19 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/icons/
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: "assets/icons/android/icon.png"
+  image_path_ios: "assets/icons/ios/AppIcon@2x.png"
+  remove_alpha_ios: true
+  background_color_ios: "#000000"
+  web:
+    generate: true
+    image_path: "assets/icons/android/icon.png"
+  windows:
+    generate: true
+    image_path: "assets/icons/android/icon.png"
+    icon_size: 48 # min:48, max:256, default: 48

@@ -117,6 +117,7 @@ class HomeScreen extends StatelessWidget {
                         width: width / 4,
                         parentWidth: width,
                         label: "Nova Receita",
+                        corBotao: Theme.of(context).colorScheme.primary,
                         onPress: () => {
                           _callNewPage(
                             context,
@@ -128,6 +129,7 @@ class HomeScreen extends StatelessWidget {
                         icone: MdiIcons.chartBellCurve,
                         width: width / 4,
                         parentWidth: width,
+                        corBotao: Theme.of(context).colorScheme.error,
                         label: "Nova Despesa",
                         onPress: () => {
                           _callNewPage(
@@ -142,6 +144,7 @@ class HomeScreen extends StatelessWidget {
                         icone: MdiIcons.creditCardPlusOutline,
                         width: width / 4,
                         parentWidth: width,
+                        corBotao: Theme.of(context).colorScheme.secondary,
                         label: "Cartões",
                         onPress: () => {
                           _callNewPage(

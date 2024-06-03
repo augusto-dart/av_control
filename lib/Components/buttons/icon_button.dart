@@ -9,6 +9,7 @@ class NormalIconButton extends StatelessWidget {
     required this.onPress,
     required this.parentWidth,
     this.label = "",
+    this.corBotao = Colors.grey,
     this.width,
   });
 
@@ -17,6 +18,7 @@ class NormalIconButton extends StatelessWidget {
   late double? width;
   final double parentWidth;
   final String label;
+  final Color corBotao;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class NormalIconButton extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1.0),
+              border: Border.all(color: corBotao, width: 1.0),
               borderRadius: BorderRadius.circular(10),
             ),
             height: 40,
@@ -44,7 +46,7 @@ class NormalIconButton extends StatelessWidget {
               style: style,
               icon: Icon(
                 icone,
-                color: Colors.grey,
+                color: corBotao,
               ),
             ),
           ),

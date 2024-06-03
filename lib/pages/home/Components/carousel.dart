@@ -1,4 +1,5 @@
 import 'package:av_control/models/cards.dart';
+import 'package:av_control/pages/register/card_register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 
@@ -27,50 +28,58 @@ class Carousel extends StatelessWidget {
           builder: (BuildContext context) {
             return Padding(
               padding: const EdgeInsets.all(24.0),
-              child: Card(
-                color: Color(cartao.cor),
-                shadowColor: Color(cartao.cor),
-                elevation: 8.0,
-                child: Container(
-                  width: width,
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            cartao.descricao,
-                            style: const TextStyle(
-                              fontSize: 24.0,
-                              color: Colors.white,
+              child: InkWell(
+                onLongPress: () => {
+                  _callNewPage(
+                    context,
+                    CardRegister(cartao: cartao),
+                  ),
+                },
+                child: Card(
+                  color: Color(cartao.cor),
+                  shadowColor: Color(cartao.cor),
+                  elevation: 8.0,
+                  child: Container(
+                    width: width,
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cartao.descricao,
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Image.asset(
-                            'assets/images/logo_orange.png',
-                            width: 50,
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        height: 15,
-                        color: Color(cartao.cor),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "R\$ ${cartao.valor.toString()}",
-                            style: const TextStyle(
-                              fontSize: 24.0,
-                              color: Colors.white,
+                            Image.asset(
+                              'assets/images/logo_orange.png',
+                              width: 50,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                        Divider(
+                          height: 15,
+                          color: Color(cartao.cor),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "R\$ ${cartao.valor.toString()}",
+                              style: const TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -78,6 +87,23 @@ class Carousel extends StatelessWidget {
           },
         );
       }).toList(),
+    );
+  }
+
+  _callNewPage(BuildContext context, Widget page) {
+    showModalBottomSheet(
+      elevation: 8.0,
+      isDismissible: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return page;
+      },
     );
   }
 }

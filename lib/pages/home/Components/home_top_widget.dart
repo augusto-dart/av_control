@@ -1,6 +1,7 @@
 import 'package:av_control/models/cards.dart';
 import 'package:av_control/pages/home/Components/carousel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomeTopWidget extends StatelessWidget {
   const HomeTopWidget({
@@ -8,6 +9,7 @@ class HomeTopWidget extends StatelessWidget {
     required this.cards,
   });
 
+  // final DateTime dataSelecionada;
   // final List<Expense> expenses;
   final List<Cards> cards;
 
@@ -23,7 +25,7 @@ class HomeTopWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Despesas',
+                'Despesas do Mês',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),

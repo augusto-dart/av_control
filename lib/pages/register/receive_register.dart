@@ -15,8 +15,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:reactive_forms/reactive_forms.dart';
 
 class ReceiveRegister extends StatefulWidget {
-  const ReceiveRegister({super.key});
+  const ReceiveRegister({super.key, this.receive});
 
+  final Expense? receive;
   @override
   State<ReceiveRegister> createState() => _ReceiveRegisterState();
 }

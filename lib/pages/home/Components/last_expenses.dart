@@ -88,11 +88,13 @@ class _LastExpensesState extends State<LastExpenses> {
                 padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
                   return Tile(
-                      expense: filteredExpenses[index],
-                      card: widget.cards
-                          .where((card) =>
-                              card.id == filteredExpenses[index].cartao)
-                          .firstOrNull);
+                    expense: filteredExpenses[index],
+                    card: widget.cards
+                        .where(
+                            (card) => card.id == filteredExpenses[index].cartao)
+                        .firstOrNull,
+                    cards: widget.cards,
+                  );
                 },
                 separatorBuilder: (BuildContext context, int index) => Divider(
                   color: Theme.of(context).dividerColor,

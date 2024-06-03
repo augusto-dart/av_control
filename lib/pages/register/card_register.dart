@@ -1,4 +1,5 @@
 import 'package:av_control/Components/buttons/primary_button.dart';
+import 'package:av_control/Components/buttons/remove_button.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Utils/util.dart';
 import 'package:av_control/models/bloc/cards/cards_bloc.dart';
@@ -13,7 +14,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CardRegister extends StatefulWidget {
-  const CardRegister({super.key});
+  const CardRegister({
+    super.key,
+    this.cartao,
+  });
+
+  final Cards? cartao;
 
   @override
   State<CardRegister> createState() => _CardRegisterState();
@@ -36,11 +42,21 @@ class _CardRegisterState extends State<CardRegister> {
 
   late Cards newCard;
   late Color _pickedColor;
+  late bool editing;
 
   @override
   void initState() {
     super.initState();
-    _pickedColor = Colors.white;
+    if (widget.cartao != null) {
+      editing = true;
+      Cards card = widget.cartao!.copy();
+      form.control('description').value = card.descricao;
+      form.control('color').value = card.cor;
+      _pickedColor = Color(card.cor);
+    } else {
+      editing = false;
+      _pickedColor = Colors.white;
+    }
   }
 
   @override
@@ -65,7 +81,7 @@ class _CardRegisterState extends State<CardRegister> {
             ReactiveForm(
               formGroup: form,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "Novo Cartão",
@@ -98,22 +114,75 @@ class _CardRegisterState extends State<CardRegister> {
                         cor: form.control('color').value,
                         userId: FirebaseAuth.instance.currentUser!.uid,
                       ),
-                      service.addCard(newCard).then(
-                            (value) => {
-                              newCard.id = value,
-                              Utils.showSucessMessage(
-                                context,
-                                'Cartão salvo com sucesso!',
-                              ),
-                              context.read<CardsBloc>().add(
-                                    AddCard(
-                                      card: newCard,
-                                    ),
+                      if (!editing)
+                        {
+                          service.addCard(newCard).then(
+                                (value) => {
+                                  newCard.id = value,
+                                  Utils.showSucessMessage(
+                                    context,
+                                    'Cartão salvo com sucesso!',
                                   ),
-                              Navigator.of(context).pop(),
-                            },
-                          ),
+                                  context.read<CardsBloc>().add(
+                                        AddCard(
+                                          card: newCard,
+                                        ),
+                                      ),
+                                  Navigator.of(context).pop(),
+                                },
+                              ),
+                        }
+                      else
+                        {
+                          newCard.id = widget.cartao!.id,
+                          newCard.setValor(widget.cartao!.valor),
+                          service.updateCard(newCard).then(
+                                (value) => {
+                                  Utils.showSucessMessage(
+                                    context,
+                                    'Cartão salvo com sucesso!',
+                                  ),
+                                  context.read<CardsBloc>().add(
+                                        UpdateCard(
+                                          card: newCard,
+                                        ),
+                                      ),
+                                  Navigator.of(context).pop(),
+                                },
+                              ),
+                        }
                     },
+                  ),
+                  Visibility(
+                    visible: editing,
+                    maintainSize: false,
+                    maintainState: false,
+                    child: RemoveButton(
+                      texto: 'Excluir',
+                      icone: MdiIcons.trashCan,
+                      parentWidth: width,
+                      onPress: () => {
+                        Utils.showConfirmMessage(
+                            context,
+                            'Confirma Exclusão do cartão?',
+                            () => {
+                                  service.deleteCard(widget.cartao!).then(
+                                        (value) => {
+                                          Utils.showSucessMessage(
+                                            context,
+                                            'Cartão removido com sucesso!',
+                                          ),
+                                          context.read<CardsBloc>().add(
+                                                RemoveCard(
+                                                  card: widget.cartao!,
+                                                ),
+                                              ),
+                                          Navigator.of(context).pop(),
+                                        },
+                                      ),
+                                }),
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -37,9 +37,7 @@ dependencies:
   intl: 
   cherry_toast:
   skeletonizer:
-  google_mobile_ads: ^5.1.0
-  flutter_colorpicker: ^1.1.0
-  flutter_combo_box: ^0.0.2+5
+  flutter_colorpicker:
 
 dev_dependencies:
   flutter_test:

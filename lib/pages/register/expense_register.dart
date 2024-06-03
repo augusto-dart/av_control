@@ -22,8 +22,10 @@ class ExpenseRegister extends StatefulWidget {
   const ExpenseRegister({
     super.key,
     required this.cartoes,
+    this.expense,
   });
 
+  final Expense? expense;
   final List<Cards> cartoes;
 
   @override

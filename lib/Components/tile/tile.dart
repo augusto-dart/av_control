@@ -2,6 +2,8 @@ import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/models/cards.dart';
 import 'package:av_control/models/enums.dart';
 import 'package:av_control/models/expense.dart';
+import 'package:av_control/pages/register/expense_register.dart';
+import 'package:av_control/pages/register/receive_register.dart';
 import 'package:flutter/material.dart';
 
 class Tile extends StatelessWidget {
@@ -9,8 +11,10 @@ class Tile extends StatelessWidget {
     super.key,
     required this.expense,
     required this.card,
+    required this.cards,
   });
 
+  final List<Cards> cards;
   final Cards? card;
   final Expense expense;
 
@@ -71,5 +75,22 @@ class Tile extends StatelessWidget {
     );
   }
 
-  _detalhaDespesa(BuildContext context, Expense expense) {}
+  _detalhaDespesa(BuildContext context, Expense expense) {
+    if (expense.tipo == ExpenseType.expense) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ExpenseRegister(
+            expense: expense,
+            cartoes: cards,
+          ),
+        ),
+      );
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ReceiveRegister(receive: expense),
+        ),
+      );
+    }
+  }
 }

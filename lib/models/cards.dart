@@ -46,4 +46,15 @@ class Cards implements Equatable {
 
   @override
   bool? get stringify => true;
+
+  Cards copy() {
+    Cards card = Cards(
+      cor: cor,
+      descricao: descricao,
+      userId: userId,
+      valor: valor,
+    );
+    card.id = id;
+    return card;
+  }
 }

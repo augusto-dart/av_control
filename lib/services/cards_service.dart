@@ -22,6 +22,10 @@ class CardsService {
     return coll.doc(card.id).set(card.toJson());
   }
 
+  Future<void> deleteCard(Cards card) {
+    return coll.doc(card.id).delete();
+  }
+
   Future<List<Cards>> getCards() {
     String userId = FirebaseAuth.instance.currentUser!.uid;
     return coll.where('userId', isEqualTo: userId).get().then(

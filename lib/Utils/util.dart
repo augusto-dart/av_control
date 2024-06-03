@@ -66,6 +66,33 @@ class Utils {
     ).show(context);
   }
 
+  static void showConfirmMessage(
+    BuildContext context,
+    String message,
+    Function handler,
+  ) {
+    CherryToast.info(
+      title: const Text(
+        'Confirma?',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      description: Text(
+        message,
+      ),
+      height: height,
+      width: width,
+      inheritThemeColors: true,
+      toastPosition: Position.center,
+      animationDuration: const Duration(milliseconds: 250),
+      toastDuration: const Duration(seconds: 5),
+      displayCloseButton: true,
+      action: const Text("Sim"),
+      actionHandler: handler,
+    ).show(context);
+  }
+
   static bool largeScreenSize(BuildContext context) {
     return MediaQuery.of(context).size.width > 900;
   }

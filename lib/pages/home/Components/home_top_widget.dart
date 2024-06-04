@@ -3,30 +3,43 @@ import 'package:av_control/pages/home/Components/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class HomeTopWidget extends StatelessWidget {
+class HomeTopWidget extends StatefulWidget {
   const HomeTopWidget({
     super.key,
     required this.cards,
   });
-
-  // final DateTime dataSelecionada;
-  // final List<Expense> expenses;
   final List<Cards> cards;
 
   @override
+  State<HomeTopWidget> createState() => _HomeTopWidgetState();
+}
+
+class _HomeTopWidgetState extends State<HomeTopWidget> {
+  final DateTime hoje = DateTime.now();
+  late DateTime dataSelecionada;
+  final f = DateFormat('MM/yyyy');
+  @override
+  void initState() {
+    dataSelecionada = DateTime(hoje.year, hoje.month, hoje.day);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    double valorTotal = cards.fold<double>(0, (sum, item) => sum + item.valor);
+    double valorTotal =
+        widget.cards.fold<double>(0, (sum, item) => sum + item.valor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Despesas do Mês',
-                style: Theme.of(context).textTheme.titleLarge,
+                'Despesas do Mês ${f.format(dataSelecionada)}',
+                style: Theme.of(context).textTheme.labelLarge,
               ),
             ),
             Padding(
@@ -38,7 +51,7 @@ class HomeTopWidget extends StatelessWidget {
             ),
           ],
         ),
-        Carousel(cartoes: cards),
+        Carousel(cartoes: widget.cards),
       ],
     );
   }

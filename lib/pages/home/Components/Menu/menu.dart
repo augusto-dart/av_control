@@ -60,7 +60,7 @@ class MenuWidget extends StatelessWidget {
         // const AdSense(),
         Divider(
           height: MediaQuery.of(context).size.height - 200,
-          color: Theme.of(context).dividerColor,
+          color: Theme.of(context).colorScheme.surface,
         ),
         TextButton.icon(
           onPressed: () => _doLogout(context),

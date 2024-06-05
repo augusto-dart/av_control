@@ -20,9 +20,7 @@ dependencies:
   firebase_analytics:
   reactive_forms:
   material_design_icons_flutter:
-  google_sign_in:
-  sign_in_with_apple:
-  crypto:
+  google_sign_in: ^6.2.1
   google_fonts:
   flutter_native_splash:
   lottie:

@@ -215,7 +215,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _loginApple(BuildContext context) async {
-    await signInWithApple();
+    // await signInWithApple();
   }
 
   void goToHome(BuildContext context) {

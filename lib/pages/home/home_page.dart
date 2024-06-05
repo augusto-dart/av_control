@@ -135,7 +135,7 @@ class HomeScreen extends StatelessWidget {
                           _callNewPage(
                             context,
                             ExpenseRegister(
-                              cartoes: cards,
+                              cards: cards,
                             ),
                           ),
                         },
@@ -210,19 +210,20 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  _callNewPage(BuildContext context, Widget page) {
-    showModalBottomSheet(
-      elevation: 8.0,
-      isDismissible: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16.0),
-          topRight: Radius.circular(16.0),
-        ),
-      ),
+  Future<void> _callNewPage(BuildContext context, Widget page) async {
+    await showDialog(
+      // elevation: 8.0,
+      // shape: const RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.only(
+      //     topLeft: Radius.circular(16.0),
+      //     topRight: Radius.circular(16.0),
+      //   ),
+      // ),
       context: context,
       builder: (context) {
-        return page;
+        return AlertDialog(
+          content: page,
+        );
       },
     );
   }

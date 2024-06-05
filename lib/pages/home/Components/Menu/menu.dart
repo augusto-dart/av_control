@@ -21,6 +21,8 @@ class MenuWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30, // Adjust the radius for the size you want
+              foregroundImage:
+                  imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
               backgroundImage:
                   imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
               child: imageUrl.isEmpty

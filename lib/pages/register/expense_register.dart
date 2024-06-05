@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/combo_box.dart';
 import 'package:av_control/Components/fields/field.dart';
@@ -18,21 +20,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class ExpenseRegister extends StatefulWidget {
-  const ExpenseRegister({
-    super.key,
-    required this.cartoes,
-    this.expense,
-  });
+// class ExpenseRegister extends StatefulWidget {
+//   const ExpenseRegister({
+//     super.key,
+//     required this.cartoes,
+//     this.expense,
+//   });
 
-  final Expense? expense;
-  final List<Cards> cartoes;
+//   final Expense? expense;
+//   final List<Cards> cartoes;
 
-  @override
-  State<ExpenseRegister> createState() => _ExpenseRegisterState();
-}
+//   @override
+//   State<ExpenseRegister> createState() => _ExpenseRegisterState();
+// }
 
-class _ExpenseRegisterState extends State<ExpenseRegister> {
+// class _ExpenseRegisterState extends State<ExpenseRegister> {
+
+class ExpenseRegister extends StatelessWidget {
   final form = FormGroup({
     'description': FormControl<String>(
       validators: [
@@ -63,26 +67,30 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
   final CardsService cardsService = CardsService();
   final ExpenseService service = ExpenseService();
 
+  final Expense? expense;
+  final List<Cards> cards;
+
   late Expense newExpense;
   late List<DropdownMenuItem> cartoes = [];
 
+  ExpenseRegister({
+    super.key,
+    required this.cards,
+    this.expense,
+  });
+
   @override
-  void initState() {
-    for (int i = 0; i < widget.cartoes.length; i++) {
+  Widget build(BuildContext context) {
+    for (int i = 0; i < cartoes.length; i++) {
       cartoes.add(
         DropdownMenuItem(
-          value: widget.cartoes[i].id,
+          value: cards[i].id,
           child: Text(
-            widget.cartoes[i].descricao,
+            cards[i].descricao,
           ),
         ),
       );
     }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width - 50;
     Cards selectedCard;
     return Scaffold(
@@ -155,7 +163,7 @@ class _ExpenseRegisterState extends State<ExpenseRegister> {
                                 context,
                                 'Despesa salva com sucesso!',
                               ),
-                              selectedCard = widget.cartoes
+                              selectedCard = cards
                                   .where((cartao) =>
                                       cartao.id == newExpense.cartao)
                                   .first,

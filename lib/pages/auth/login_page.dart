@@ -1,11 +1,11 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, must_be_immutable
+import 'dart:async';
 
 import 'package:av_control/Components/buttons/icon_button.dart';
 import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Components/fields/field_type.dart';
 import 'package:av_control/Utils/util.dart';
-import 'package:av_control/auth/auth_with_apple.dart';
 import 'package:av_control/auth/auth_with_google.dart';
 import 'package:av_control/pages/auth/create_user_page.dart';
 import 'package:av_control/pages/home/home_page.dart';
@@ -37,10 +37,12 @@ class LoginPage extends StatelessWidget {
     fontSize: 12.0,
   );
   late bool creatingUser = false;
+  late StreamSubscription<User?> _streamSubscription;
 
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    _streamSubscription =
+        FirebaseAuth.instance.userChanges().listen((User? user) {
       if (user != null && !creatingUser) {
         goToHome(context);
       }
@@ -87,7 +89,7 @@ class LoginPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              '/images/logo_gray_orange.png',
+                              'assets/images/logo_gray_orange.png',
                               width: cardWidth / 2,
                             ),
                             Text(
@@ -189,12 +191,14 @@ class LoginPage extends StatelessWidget {
         email: form.control("email").value,
         password: form.control("password").value,
       );
+      if (FirebaseAuth.instance.currentUser != null) {
+        goToHome(context);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == "invalid-credential") {
         Utils.displayToast(context, "Email ou senha inválidos!");
       } else {
-        print(e.code);
-        print(e.message);
+        Utils.displayToast(context, e.message!);
       }
     }
   }
@@ -212,6 +216,9 @@ class LoginPage extends StatelessWidget {
 
   void _loginGoogle(BuildContext context) async {
     await signInWithGoogle();
+    if (FirebaseAuth.instance.currentUser != null) {
+      goToHome(context);
+    }
   }
 
   void _loginApple(BuildContext context) async {
@@ -219,6 +226,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void goToHome(BuildContext context) {
+    _streamSubscription.cancel();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_function_literals_in_foreach_calls
+// ignore_for_file: avoid_function_literals_in_foreach_calls, must_be_immutable
 
 import 'dart:async';
 
@@ -29,6 +29,8 @@ class HomeScreen extends StatelessWidget {
   final GlobalKey<SliderDrawerState> drawerKey = GlobalKey<SliderDrawerState>();
   final CardsService cardsService = CardsService();
   final ExpenseService service = ExpenseService();
+  late StreamSubscription<User?> _streamSubscription;
+
   final List<Expense> fakeExpenses = List.generate(
     10,
     (index) {
@@ -49,15 +51,15 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late List<Cards> cards = [];
-
-    (context.read<ExpenseBloc>()).add(const ClearExpenses());
-    (context.read<CardsBloc>()).add(const ClearCards());
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    _streamSubscription =
+        FirebaseAuth.instance.userChanges().listen((User? user) {
       if (user == null) {
         goToLogin(context);
       }
     });
 
+    (context.read<ExpenseBloc>()).add(const ClearExpenses());
+    (context.read<CardsBloc>()).add(const ClearCards());
     double height = MediaQuery.of(context).size.height - 415;
     double width = MediaQuery.of(context).size.width;
 
@@ -80,7 +82,7 @@ class HomeScreen extends StatelessWidget {
               appBarColor: Theme.of(context).colorScheme.surface,
               title: const Text(""),
             ),
-            isCupertino: true,
+            isCupertino: false,
             isDraggable: true,
             splashColor: Theme.of(context).colorScheme.primary,
             key: drawerKey,
@@ -135,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                           _callNewPage(
                             context,
                             ExpenseRegister(
-                              cards: cards,
+                              cartoes: cards,
                             ),
                           ),
                         },
@@ -159,16 +161,20 @@ class HomeScreen extends StatelessWidget {
                     builder: (context, state) {
                       if (state is ExpenseLoaded &&
                           context.read<CardsBloc>().state is CardsLoaded) {
-                        return ConstrainedBox(
-                          constraints: BoxConstraints.tight(
-                            Size(
-                              MediaQuery.of(context).size.width,
-                              height,
+                        return Expanded(
+                          child: SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints.tight(
+                                Size(
+                                  MediaQuery.of(context).size.width,
+                                  height,
+                                ),
+                              ),
+                              child: LastExpenses(
+                                expenses: state.expenses,
+                                cards: cards,
+                              ),
                             ),
-                          ),
-                          child: LastExpenses(
-                            expenses: state.expenses,
-                            cards: cards,
                           ),
                         );
                       } else {
@@ -199,32 +205,27 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void goToLogin(BuildContext context) {
-    Future.delayed(
-      const Duration(milliseconds: 250),
-      () {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => LoginPage()),
-            (route) => false);
+  _callNewPage(BuildContext context, Widget page) {
+    showModalBottomSheet(
+      elevation: 8.0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: page,
+        );
       },
     );
   }
 
-  Future<void> _callNewPage(BuildContext context, Widget page) async {
-    await showDialog(
-      // elevation: 8.0,
-      // shape: const RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.only(
-      //     topLeft: Radius.circular(16.0),
-      //     topRight: Radius.circular(16.0),
-      //   ),
-      // ),
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: page,
-        );
-      },
-    );
+  void goToLogin(BuildContext context) {
+    _streamSubscription.cancel();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
   }
 }

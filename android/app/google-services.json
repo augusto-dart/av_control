@@ -12,7 +12,20 @@
           "package_name": "com.example.av_control"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "666082236827-d60b8ms62ug7jblscm9c1bseqa95dslb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.av_control",
+            "certificate_hash": "c615c18060c281decedfd8571aa357cb3fb67f13"
+          }
+        },
+        {
+          "client_id": "666082236827-b8ifd4kuu5v0mcu6qp37em0o2nn8vfcf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDTl-W2Vtu9CuJDE8bxORlbMx7bWWIy9Dg"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666082236827-b8ifd4kuu5v0mcu6qp37em0o2nn8vfcf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "666082236827-aku6975mdvio5sciik3f0q93n8mfu7b2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.avControl"
+              }
+            }
+          ]
         }
       }
     }

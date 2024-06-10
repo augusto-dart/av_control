@@ -3,6 +3,7 @@ import 'package:av_control/Utils/theme_cubit.dart';
 import 'package:av_control/models/bloc/cards/cards_bloc.dart';
 import 'package:av_control/models/bloc/expense/expense_bloc.dart';
 import 'package:av_control/pages/auth/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Intl.defaultLocale = 'pt_BR';
+
+  final auth = FirebaseAuth.instanceFor(
+    app: Firebase.app(),
+  );
+  await auth.setPersistence(Persistence.NONE);
 
   Bloc.observer = const AppBlocObserver();
   runApp(const AvControlApp());

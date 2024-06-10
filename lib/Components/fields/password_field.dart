@@ -27,7 +27,23 @@ class _AvPasswordFieldState extends State<AvPasswordField> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: widget.hintText,
-        suffixIcon: obscure ? Icon(MdiIcons.eye) : Icon(MdiIcons.eyeOff),
+        suffixIcon: obscure
+            ? InkWell(
+                child: Icon(MdiIcons.eye),
+                onTap: () => {
+                  setState(() {
+                    obscure = !obscure;
+                  }),
+                },
+              )
+            : InkWell(
+                child: Icon(MdiIcons.eyeOff),
+                onTap: () => {
+                  setState(() {
+                    obscure = !obscure;
+                  }),
+                },
+              ),
       ),
       validationMessages: {
         'required': (error) => widget.requiredText,
@@ -35,11 +51,6 @@ class _AvPasswordFieldState extends State<AvPasswordField> {
       },
       formControlName: widget.controlName,
       obscureText: obscure,
-      onTap: (control) {
-        setState(() {
-          obscure = !obscure;
-        });
-      },
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:av_control/Components/buttons/primary_button.dart';
 import 'package:av_control/Components/buttons/remove_button.dart';
-import 'package:av_control/Components/fields/field.dart';
 import 'package:av_control/Utils/util.dart';
 import 'package:av_control/models/bloc/cards/cards_bloc.dart';
 import 'package:av_control/models/cards.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:reactive_forms/reactive_forms.dart';
 
 class CardRegister extends StatefulWidget {
   const CardRegister({
@@ -26,18 +24,18 @@ class CardRegister extends StatefulWidget {
 }
 
 class _CardRegisterState extends State<CardRegister> {
-  final form = FormGroup({
-    'description': FormControl<String>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-    'color': FormControl<int>(
-      validators: [
-        Validators.required,
-      ],
-    ),
-  });
+  // final form = FormGroup({
+  //   'description': FormControl<String>(
+  //     validators: [
+  //       Validators.required,
+  //     ],
+  //   ),
+  //   'color': FormControl<int>(
+  //     validators: [
+  //       Validators.required,
+  //     ],
+  //   ),
+  // });
   final CardsService service = CardsService();
 
   late Cards newCard;
@@ -50,14 +48,17 @@ class _CardRegisterState extends State<CardRegister> {
     if (widget.cartao != null) {
       editing = true;
       Cards card = widget.cartao!.copy();
-      form.control('description').value = card.descricao;
-      form.control('color').value = card.cor;
+      // form.control('description').value = card.descricao;
+      // form.control('color').value = card.cor;
       _pickedColor = Color(card.cor);
     } else {
       editing = false;
       _pickedColor = Colors.white;
     }
   }
+
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController descricaoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +79,9 @@ class _CardRegisterState extends State<CardRegister> {
                 ),
               ),
             ),
-            ReactiveForm(
-              formGroup: form,
+            Form(
+              key: _formKey,
+              // formGroup: form,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -87,10 +89,12 @@ class _CardRegisterState extends State<CardRegister> {
                     "Novo Cartão",
                     style: GoogleFonts.lato(),
                   ),
-                  const AvField(
-                    controlName: 'description',
-                    hintText: 'Descrição',
-                    requiredText: 'Informe a Descrição do Cartão',
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Descrição',
+                    ),
+                    controller: descricaoController,
                   ),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -109,9 +113,9 @@ class _CardRegisterState extends State<CardRegister> {
                     parentWidth: width,
                     onPress: () => {
                       newCard = Cards(
-                        descricao: form.control('description').value,
+                        descricao: descricaoController.text,
                         valor: 0.0,
-                        cor: form.control('color').value,
+                        cor: _pickedColor.value,
                         userId: FirebaseAuth.instance.currentUser!.uid,
                       ),
                       if (!editing)
@@ -163,24 +167,25 @@ class _CardRegisterState extends State<CardRegister> {
                       parentWidth: width,
                       onPress: () => {
                         Utils.showConfirmMessage(
-                            context,
-                            'Confirma Exclusão do cartão?',
-                            () => {
-                                  service.deleteCard(widget.cartao!).then(
-                                        (value) => {
-                                          Utils.showSucessMessage(
-                                            context,
-                                            'Cartão removido com sucesso!',
+                          context,
+                          'Confirma Exclusão do cartão?',
+                          () => {
+                            service.deleteCard(widget.cartao!).then(
+                                  (value) => {
+                                    Utils.showSucessMessage(
+                                      context,
+                                      'Cartão removido com sucesso!',
+                                    ),
+                                    context.read<CardsBloc>().add(
+                                          RemoveCard(
+                                            card: widget.cartao!,
                                           ),
-                                          context.read<CardsBloc>().add(
-                                                RemoveCard(
-                                                  card: widget.cartao!,
-                                                ),
-                                              ),
-                                          Navigator.of(context).pop(),
-                                        },
-                                      ),
-                                }),
+                                        ),
+                                    Navigator.of(context).pop(),
+                                  },
+                                ),
+                          },
+                        ),
                       },
                     ),
                   ),
@@ -196,7 +201,6 @@ class _CardRegisterState extends State<CardRegister> {
   void changeColor(Color value) {
     setState(() {
       _pickedColor = value;
-      form.control('color').updateValue(_pickedColor.value);
     });
   }
 }

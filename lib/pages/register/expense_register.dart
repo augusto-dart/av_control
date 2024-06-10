@@ -20,23 +20,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-// class ExpenseRegister extends StatefulWidget {
-//   const ExpenseRegister({
-//     super.key,
-//     required this.cartoes,
-//     this.expense,
-//   });
+class ExpenseRegister extends StatefulWidget {
+  const ExpenseRegister({
+    super.key,
+    required this.cartoes,
+    this.expense,
+  });
 
-//   final Expense? expense;
-//   final List<Cards> cartoes;
+  final Expense? expense;
+  final List<Cards> cartoes;
 
-//   @override
-//   State<ExpenseRegister> createState() => _ExpenseRegisterState();
-// }
+  @override
+  State<ExpenseRegister> createState() => _ExpenseRegisterState();
+}
 
-// class _ExpenseRegisterState extends State<ExpenseRegister> {
-
-class ExpenseRegister extends StatelessWidget {
+class _ExpenseRegisterState extends State<ExpenseRegister> {
   final form = FormGroup({
     'description': FormControl<String>(
       validators: [
@@ -67,26 +65,26 @@ class ExpenseRegister extends StatelessWidget {
   final CardsService cardsService = CardsService();
   final ExpenseService service = ExpenseService();
 
-  final Expense? expense;
-  final List<Cards> cards;
+  // final Expense? expense;
+  // final List<Cards> cards;
 
   late Expense newExpense;
   late List<DropdownMenuItem> cartoes = [];
 
-  ExpenseRegister({
-    super.key,
-    required this.cards,
-    this.expense,
-  });
+  // ExpenseRegister({
+  //   super.key,
+  //   required this.cards,
+  //   this.expense,
+  // });
 
   @override
   Widget build(BuildContext context) {
     for (int i = 0; i < cartoes.length; i++) {
       cartoes.add(
         DropdownMenuItem(
-          value: cards[i].id,
+          value: widget.cartoes[i].id,
           child: Text(
-            cards[i].descricao,
+            widget.cartoes[i].descricao,
           ),
         ),
       );
@@ -163,7 +161,7 @@ class ExpenseRegister extends StatelessWidget {
                                 context,
                                 'Despesa salva com sucesso!',
                               ),
-                              selectedCard = cards
+                              selectedCard = widget.cartoes
                                   .where((cartao) =>
                                       cartao.id == newExpense.cartao)
                                   .first,

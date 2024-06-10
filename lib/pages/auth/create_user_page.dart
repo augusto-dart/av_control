@@ -120,7 +120,7 @@ class CreateUserPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                '/images/logo_gray_orange.png',
+                                'assets//images/logo_gray_orange.png',
                                 width: cardWidth / 2,
                               ),
                               Text(
